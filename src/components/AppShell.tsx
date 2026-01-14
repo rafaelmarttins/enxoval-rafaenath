@@ -17,16 +17,16 @@ import { cn } from "@/lib/utils";
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="offcanvas" className="border-r bg-sidebar">
+    <Sidebar collapsible="offcanvas" className="border-r bg-sidebar shadow-sm">
       <SidebarContent className="flex flex-col justify-between">
         <div>
-          <div className="flex items-center gap-3 px-4 py-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-semibold">
+          <div className="flex items-center gap-3 px-6 py-6">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-semibold shadow-sm">
               E
             </div>
             <div className="space-y-0.5">
               <p className="text-xs font-medium text-muted-foreground">Enxoval</p>
-              <p className="text-sm font-semibold">Painel de Casa</p>
+              <p className="text-sm font-semibold tracking-tight">Painel de Casa</p>
             </div>
           </div>
 
@@ -41,7 +41,7 @@ export function AppSidebar() {
                     <NavLink
                       to="/"
                       end
-                      className="flex items-center gap-2 rounded-full px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                      className="flex items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
                       activeClassName="bg-background text-foreground shadow-sm"
                     >
                       <ListChecks className="h-4 w-4" />
@@ -50,21 +50,33 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton disabled className={cn("cursor-default rounded-full px-3 py-2 text-sm text-muted-foreground/70")}
+                  <SidebarMenuButton
+                    disabled
+                    className={cn(
+                      "cursor-default rounded-full px-4 py-2 text-sm text-muted-foreground/70",
+                    )}
                   >
                     <Home className="mr-2 h-4 w-4" />
                     <span>Dashboard</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton disabled className={cn("cursor-default rounded-full px-3 py-2 text-sm text-muted-foreground/70")}
+                  <SidebarMenuButton
+                    disabled
+                    className={cn(
+                      "cursor-default rounded-full px-4 py-2 text-sm text-muted-foreground/70",
+                    )}
                   >
                     <ShoppingBag className="mr-2 h-4 w-4" />
                     <span>Compras planejadas</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton disabled className={cn("cursor-default rounded-full px-3 py-2 text-sm text-muted-foreground/70")}
+                  <SidebarMenuButton
+                    disabled
+                    className={cn(
+                      "cursor-default rounded-full px-4 py-2 text-sm text-muted-foreground/70",
+                    )}
                   >
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Configurações</span>
@@ -75,10 +87,10 @@ export function AppSidebar() {
           </SidebarGroup>
         </div>
 
-        <div className="px-4 pb-4 pt-2 text-xs text-muted-foreground">
+        <div className="px-6 pb-6 pt-2 text-xs text-muted-foreground">
           <button
             type="button"
-            className="flex w-full items-center justify-between rounded-full px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="flex w-full items-center justify-between rounded-full px-4 py-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
           >
             <span className="flex items-center gap-2">
               <LogOut className="h-3.5 w-3.5" />
@@ -96,16 +108,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
-        <div className="flex min-h-screen flex-1 flex-col">
-          <header className="flex h-16 items-center justify-between border-b bg-background px-4">
-            <div className="flex items-center gap-2">
+        <div className="flex min-h-screen flex-1 flex-col bg-background">
+          <header className="flex h-20 items-center justify-between border-b bg-background/80 px-8">
+            <div className="flex items-center gap-3">
               <SidebarTrigger />
-              <div className="text-sm text-muted-foreground">
-                Painel de Casa
-              </div>
+              <div className="text-sm font-medium text-muted-foreground">Painel de Casa</div>
             </div>
           </header>
-          <main className="flex-1 bg-muted/40">{children}</main>
+          <main className="flex-1 bg-background px-8 py-8">{children}</main>
         </div>
       </div>
     </SidebarProvider>
