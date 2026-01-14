@@ -35,8 +35,6 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
-const STORAGE_KEY = "enxoval_casamento_itens_v1";
-
 const CATEGORIAS = [
   "Cozinha",
   "Quarto",
@@ -90,33 +88,6 @@ function formatCurrency(value: number) {
   });
 }
 
-function loadItems(): EnxovalItem[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as EnxovalItem[];
-    if (!Array.isArray(parsed)) return [];
-    return parsed.map((item) => ({
-      ...item,
-      quantidadeDesejada: Number(item.quantidadeDesejada) || 0,
-      quantidadeAdquirida: Number(item.quantidadeAdquirida) || 0,
-      valorUnitario: Number(item.valorUnitario) || 0,
-    }));
-  } catch {
-    return [];
-  }
-}
-
-function saveItems(items: EnxovalItem[]) {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  } catch {
-    // falha silenciosa
-  }
-}
-
 const Index = () => {
   const { toast } = useToast();
 
@@ -158,7 +129,7 @@ const Index = () => {
       const user = authData?.user;
 
       if (!user) {
-        setItems(loadItems());
+        setItems([]);
         setLoadingItems(false);
         return;
       }
@@ -173,7 +144,12 @@ const Index = () => {
 
       if (error || !data) {
         console.error("Erro ao carregar itens do backend:", error);
-        setItems(loadItems());
+        toast({
+          title: "Erro ao carregar itens",
+          description: "Tente novamente em alguns instantes.",
+          variant: "destructive",
+        });
+        setItems([]);
         setLoadingItems(false);
         return;
       }
@@ -199,12 +175,6 @@ const Index = () => {
 
     carregarItens();
   }, []);
-
-  useEffect(() => {
-    if (!currentUserId) {
-      saveItems(items);
-    }
-  }, [items, currentUserId]);
 
   const totalItens = items.length;
   const totalItensAdquiridos = useMemo(
