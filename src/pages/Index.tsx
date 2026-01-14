@@ -560,11 +560,11 @@ const Index = () => {
             </div>
             <div className="flex flex-col gap-2 md:w-56">
               <Label>Ordenar por</Label>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant={sortField === "nome" ? "default" : "outline"}
                   size="sm"
-                  className="flex-1 justify-between"
+                  className="min-w-[110px] justify-between whitespace-nowrap"
                   onClick={() => alternarOrdenacao("nome")}
                 >
                   <span>Nome</span>
@@ -575,7 +575,7 @@ const Index = () => {
                 <Button
                   variant={sortField === "prioridade" ? "default" : "outline"}
                   size="sm"
-                  className="flex-1 justify-between"
+                  className="min-w-[130px] justify-between whitespace-nowrap"
                   onClick={() => alternarOrdenacao("prioridade")}
                 >
                   <span>Prioridade</span>
