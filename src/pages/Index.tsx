@@ -119,6 +119,7 @@ const Index = () => {
   const { toast } = useToast();
 
   const [items, setItems] = useState<EnxovalItem[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [busca, setBusca] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
   const [filtroStatus, setFiltroStatus] = useState<string>("todos");
@@ -147,7 +148,49 @@ const Index = () => {
   const [itemParaExcluir, setItemParaExcluir] = useState<EnxovalItem | null>(null);
 
   useEffect(() => {
-    setItems(loadItems());
+    const carregarItens = async () => {
+      // tenta identificar usuário logado; se não houver, volta a usar apenas localStorage
+      const { data: authData } = await supabase.auth.getUser();
+      const user = authData?.user;
+
+      if (!user) {
+        setItems(loadItems());
+        return;
+      }
+
+      setCurrentUserId(user.id);
+
+      const { data, error } = await supabase
+        .from("enxoval_items")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error || !data) {
+        console.error("Erro ao carregar itens do backend:", error);
+        // se der erro no backend, mantém comportamento antigo com localStorage
+        setItems(loadItems());
+        return;
+      }
+
+      const mapeados: EnxovalItem[] = data.map((row: any) => ({
+        id: row.id,
+        nome: row.nome,
+        categoria: row.categoria as Categoria,
+        quantidadeDesejada: Number(row.quantidade_desejada) || 0,
+        quantidadeAdquirida: Number(row.quantidade_adquirida) || 0,
+        valorUnitario: Number(row.valor_unitario) || 0,
+        prioridade: row.prioridade as Prioridade,
+        status: row.status as Status,
+        loja: row.loja ?? undefined,
+        observacoes: row.observacoes ?? undefined,
+        imageUrl: row.image_url ?? undefined,
+        productUrl: row.product_url ?? undefined,
+      }));
+
+      setItems(mapeados);
+    };
+
+    carregarItens();
   }, []);
 
   useEffect(() => {
@@ -351,34 +394,132 @@ const Index = () => {
       productUrl: formProductUrl.trim() || undefined,
     };
 
-    if (editingItem) {
-      setItems((prev) => prev.map((i) => (i.id === editingItem.id ? { ...i, ...novoItemBase } : i)));
-      toast({ title: "Item atualizado", description: "As informações do item foram salvas." });
-    } else {
-      const novoItem: EnxovalItem = {
-        id: crypto.randomUUID(),
-        ...novoItemBase,
-      };
-      setItems((prev) => [novoItem, ...prev]);
-      toast({ title: "Item adicionado", description: "O item foi incluído no enxoval." });
-    }
+    try {
+      if (editingItem) {
+        const atualizado: EnxovalItem = { ...editingItem, ...novoItemBase };
+        setItems((prev) => prev.map((i) => (i.id === editingItem.id ? atualizado : i)));
 
-    setIsDialogOpen(false);
-    limparFormulario();
+        if (currentUserId) {
+          const { error } = await supabase
+            .from("enxoval_items")
+            .update({
+              nome: atualizado.nome,
+              categoria: atualizado.categoria,
+              prioridade: atualizado.prioridade,
+              status: atualizado.status,
+              quantidade_desejada: atualizado.quantidadeDesejada,
+              quantidade_adquirida: atualizado.quantidadeAdquirida,
+              valor_unitario: atualizado.valorUnitario,
+              loja: atualizado.loja ?? null,
+              observacoes: atualizado.observacoes ?? null,
+              image_url: atualizado.imageUrl ?? null,
+              product_url: atualizado.productUrl ?? null,
+            })
+            .eq("id", atualizado.id)
+            .eq("user_id", currentUserId);
+
+          if (error) {
+            console.error("Erro ao atualizar item no backend:", error);
+            toast({
+              title: "Erro ao salvar no backend",
+              description: "O item foi salvo apenas neste dispositivo.",
+              variant: "destructive",
+            });
+          }
+        }
+
+        toast({ title: "Item atualizado", description: "As informações do item foram salvas." });
+      } else {
+        const novoItem: EnxovalItem = {
+          id: crypto.randomUUID(),
+          ...novoItemBase,
+        };
+
+        setItems((prev) => [novoItem, ...prev]);
+
+        if (currentUserId) {
+          const { error } = await supabase.from("enxoval_items").insert({
+            id: novoItem.id,
+            user_id: currentUserId,
+            nome: novoItem.nome,
+            categoria: novoItem.categoria,
+            prioridade: novoItem.prioridade,
+            status: novoItem.status,
+            quantidade_desejada: novoItem.quantidadeDesejada,
+            quantidade_adquirida: novoItem.quantidadeAdquirida,
+            valor_unitario: novoItem.valorUnitario,
+            loja: novoItem.loja ?? null,
+            observacoes: novoItem.observacoes ?? null,
+            image_url: novoItem.imageUrl ?? null,
+            product_url: novoItem.productUrl ?? null,
+          });
+
+          if (error) {
+            console.error("Erro ao inserir item no backend:", error);
+            toast({
+              title: "Erro ao salvar no backend",
+              description: "O item foi salvo apenas neste dispositivo.",
+              variant: "destructive",
+            });
+          }
+        }
+
+        toast({ title: "Item adicionado", description: "O item foi incluído no enxoval." });
+      }
+    } finally {
+      setIsDialogOpen(false);
+      limparFormulario();
+    }
   }
 
-  function marcarStatus(item: EnxovalItem, novoStatus: Status) {
+  async function marcarStatus(item: EnxovalItem, novoStatus: Status) {
     setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: novoStatus } : i)));
+
+    if (currentUserId) {
+      const { error } = await supabase
+        .from("enxoval_items")
+        .update({ status: novoStatus })
+        .eq("id", item.id)
+        .eq("user_id", currentUserId);
+
+      if (error) {
+        console.error("Erro ao atualizar status no backend:", error);
+        toast({
+          title: "Erro ao atualizar status",
+          description: "A alteração foi salva apenas neste dispositivo.",
+          variant: "destructive",
+        });
+      }
+    }
   }
 
   function confirmarExclusao(item: EnxovalItem) {
     setItemParaExcluir(item);
   }
 
-  function excluirItemConfirmado() {
+  async function excluirItemConfirmado() {
     if (!itemParaExcluir) return;
     const nome = itemParaExcluir.nome;
+
     setItems((prev) => prev.filter((i) => i.id !== itemParaExcluir.id));
+
+    if (currentUserId) {
+      const { error } = await supabase
+        .from("enxoval_items")
+        .delete()
+        .eq("id", itemParaExcluir.id)
+        .eq("user_id", currentUserId);
+
+      if (error) {
+        console.error("Erro ao excluir item no backend:", error);
+        toast({
+          title: "Erro ao excluir no backend",
+          description: "O item foi removido apenas deste dispositivo.",
+          variant: "destructive",
+        });
+      }
+    }
+
     setItemParaExcluir(null);
     toast({ title: "Item excluído", description: `O item "${nome}" foi removido.` });
   }
