@@ -95,15 +95,15 @@ const Dashboard = () => {
 
   const percentualConclusao = totalItens === 0 ? 0 : Math.round(((totalComprados + totalPresenteados) / totalItens) * 100);
 
-  const valorTotalEstimado = useMemo(
-    () => items.reduce((acc, i) => (i.status === "Comprado" || i.status === "Presenteado" ? acc + i.valorUnitario : acc), 0),
+  const valorTotalPlanejado = useMemo(
+    () => items.reduce((acc, i) => acc + i.quantidadeDesejada * i.valorUnitario, 0),
     [items],
   );
-  const valorJaAdquirido = useMemo(
-    () => items.reduce((acc, i) => (i.status === "Comprado" ? acc + i.valorUnitario : acc), 0),
+  const valorJaGasto = useMemo(
+    () => items.reduce((acc, i) => (i.status === "Comprado" ? acc + i.quantidadeAdquirida * i.valorUnitario : acc), 0),
     [items],
   );
-  const valorRestante = Math.max(valorTotalEstimado - valorJaAdquirido, 0);
+  const valorFaltante = Math.max(valorTotalPlanejado - valorJaGasto, 0);
 
   const porCategoria = useMemo(() => {
     const mapa = new Map<Categoria, { categoria: Categoria; valor: number }>();
@@ -156,18 +156,18 @@ const Dashboard = () => {
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Valor estimado</CardTitle>
+              <CardTitle className="text-sm font-medium">Total do enxoval</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">{formatCurrency(valorTotalEstimado)}</p>
+              <p className="text-2xl font-semibold">{formatCurrency(valorTotalPlanejado)}</p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Valor restante</CardTitle>
+              <CardTitle className="text-sm font-medium">Ainda falta comprar</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">{formatCurrency(valorRestante)}</p>
+              <p className="text-2xl font-semibold">{formatCurrency(valorFaltante)}</p>
             </CardContent>
           </Card>
         </section>
@@ -246,9 +246,9 @@ const Dashboard = () => {
                         className="h-full rounded-full bg-primary/70"
                         style={{
                           width:
-                            valorTotalEstimado === 0
+                            valorTotalPlanejado === 0
                               ? "0%"
-                              : `${Math.min(100, (categ.valor / valorTotalEstimado) * 100).toFixed(0)}%`,
+                              : `${Math.min(100, (categ.valor / valorTotalPlanejado) * 100).toFixed(0)}%`,
                         }}
                       />
                     </div>
