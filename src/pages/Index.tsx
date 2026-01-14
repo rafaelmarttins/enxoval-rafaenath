@@ -755,7 +755,7 @@ const Index = () => {
             if (!open) limparFormulario();
           }}
         >
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] w-[95vw] overflow-y-auto sm:max-h-[80vh] sm:w-full">
             <DialogHeader>
               <DialogTitle>{editingItem ? "Editar item do enxoval" : "Adicionar item ao enxoval"}</DialogTitle>
             </DialogHeader>
