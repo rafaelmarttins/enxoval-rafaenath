@@ -79,42 +79,63 @@ function loadItems(): EnxovalItem[] {
 const Dashboard = () => {
   const [items, setItems] = useState<EnxovalItem[]>([]);
 
+  const carregarItens = async () => {
+    const { data: authData } = await supabase.auth.getUser();
+    const user = authData?.user;
+
+    if (!user) {
+      setItems(loadItems());
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("enxoval_items")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error || !data) {
+      console.error("Erro ao carregar itens do backend no Dashboard:", error);
+      setItems(loadItems());
+      return;
+    }
+
+    const mapeados: EnxovalItem[] = data.map((row: any) => ({
+      id: row.id,
+      nome: row.nome,
+      categoria: row.categoria as Categoria,
+      quantidadeDesejada: Number(row.quantidade_desejada) || 0,
+      quantidadeAdquirida: Number(row.quantidade_adquirida) || 0,
+      valorUnitario: Number(row.valor_unitario) || 0,
+      prioridade: row.prioridade as Prioridade,
+      status: row.status as Status,
+    }));
+
+    setItems(mapeados);
+  };
+
   useEffect(() => {
-    const carregarItens = async () => {
-      const { data: authData } = await supabase.auth.getUser();
-      const user = authData?.user;
-
-      if (!user) {
-        setItems(loadItems());
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("enxoval_items")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error || !data) {
-        console.error("Erro ao carregar itens do backend no Dashboard:", error);
-        setItems(loadItems());
-        return;
-      }
-
-      const mapeados: EnxovalItem[] = data.map((row: any) => ({
-        id: row.id,
-        nome: row.nome,
-        categoria: row.categoria as Categoria,
-        quantidadeDesejada: Number(row.quantidade_desejada) || 0,
-        quantidadeAdquirida: Number(row.quantidade_adquirida) || 0,
-        valorUnitario: Number(row.valor_unitario) || 0,
-        prioridade: row.prioridade as Prioridade,
-        status: row.status as Status,
-      }));
-
-      setItems(mapeados);
-    };
-
     carregarItens();
+  }, []);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("enxoval_items_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "enxoval_items",
+        },
+        () => {
+          carregarItens();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const totalItens = items.length;
