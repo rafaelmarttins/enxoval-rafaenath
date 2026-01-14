@@ -598,13 +598,16 @@ const Index = () => {
                   <SelectItem value="asc">Baixa → Alta</SelectItem>
                 </SelectContent>
               </Select>
-              {temFiltrosAtivos && (
-                <Button variant="ghost" size="sm" className="self-start px-0 text-xs" onClick={limparFiltros}>
-                  Limpar filtros
-                </Button>
-              )}
             </div>
           </div>
+
+          {temFiltrosAtivos && (
+            <div className="flex justify-end">
+              <Button variant="ghost" size="sm" className="px-0 text-xs" onClick={limparFiltros}>
+                Limpar filtros
+              </Button>
+            </div>
+          )}
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {itensFiltradosEOrdenados.length === 0 ? (
