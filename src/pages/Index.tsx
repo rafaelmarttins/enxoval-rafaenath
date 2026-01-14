@@ -161,12 +161,12 @@ const Index = () => {
   const percentualConclusao = totalItens === 0 ? 0 : Math.round((totalItensAdquiridos / totalItens) * 100);
 
   const valorTotalEstimado = useMemo(
-    () => items.reduce((acc, i) => (i.status === "Comprado" || i.status === "Presenteado" ? acc + i.valorUnitario : acc), 0),
+    () => items.reduce((acc, i) => acc + i.quantidadeDesejada * i.valorUnitario, 0),
     [items],
   );
 
   const valorJaAdquirido = useMemo(
-    () => items.reduce((acc, i) => (i.status === "Comprado" ? acc + i.valorUnitario : acc), 0),
+    () => items.reduce((acc, i) => (i.status === "Comprado" ? acc + i.quantidadeAdquirida * i.valorUnitario : acc), 0),
     [items],
   );
 
