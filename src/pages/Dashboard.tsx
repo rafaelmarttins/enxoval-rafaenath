@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
-import { Home } from "lucide-react";
+import { Home, Wallet } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -183,8 +183,11 @@ const Dashboard = () => {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total do enxoval</CardTitle>
+            <CardHeader className="flex items-center justify-between pb-2">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-sm font-medium">Total gasto</CardTitle>
+                <Wallet className="h-4 w-4 text-emerald-600" />
+              </div>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-semibold">{formatCurrency(valorTotalEnxoval)}</p>
