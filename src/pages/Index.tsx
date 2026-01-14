@@ -33,6 +33,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "enxoval_casamento_itens_v1";
 
@@ -612,7 +613,13 @@ const Index = () => {
               </p>
             ) : (
               itensFiltradosEOrdenados.map((item) => (
-                <Card key={item.id} className="flex h-full flex-col overflow-hidden">
+                <Card
+                  key={item.id}
+                  className={cn(
+                    "flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md",
+                    item.prioridade === "Alta" && "border-amber-300 bg-amber-50/80 animate-fade-in",
+                  )}
+                >
                   {item.imageUrl && (
                     <div className="relative h-40 w-full overflow-hidden bg-muted">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
