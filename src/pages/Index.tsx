@@ -456,12 +456,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8">
+      <main className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-8">
         <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Heart className="h-7 w-7 text-primary" />
-              <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Itens do enxoval</h1>
+              <Heart className="h-8 w-8 text-primary" />
+              <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Itens do enxoval</h1>
             </div>
             <p className="text-sm text-muted-foreground">
               Veja tudo o que você já comprou e o que ainda falta.
@@ -485,7 +485,7 @@ const Index = () => {
               <CardTitle className="text-sm font-medium">Itens cadastrados</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">{totalItens}</p>
+              <p className="text-3xl font-semibold">{totalItens}</p>
             </CardContent>
           </Card>
           <Card>
@@ -493,7 +493,7 @@ const Index = () => {
               <CardTitle className="text-sm font-medium">Itens adquiridos</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">{totalItensAdquiridos}</p>
+              <p className="text-3xl font-semibold">{totalItensAdquiridos}</p>
               <p className="text-xs text-muted-foreground">{percentualConclusao}% do enxoval concluído</p>
             </CardContent>
           </Card>
@@ -502,7 +502,7 @@ const Index = () => {
               <CardTitle className="text-sm font-medium">Valor estimado</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">{formatCurrency(valorTotalEstimado)}</p>
+              <p className="text-3xl font-semibold">{formatCurrency(valorTotalEstimado)}</p>
               <p className="text-xs text-muted-foreground">Com base nos valores informados</p>
             </CardContent>
           </Card>
@@ -511,7 +511,7 @@ const Index = () => {
               <CardTitle className="text-sm font-medium">Ainda falta comprar</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">{formatCurrency(valorRestante)}</p>
+              <p className="text-3xl font-semibold">{formatCurrency(valorRestante)}</p>
               <p className="text-xs text-muted-foreground">Somente itens não comprados</p>
             </CardContent>
           </Card>
