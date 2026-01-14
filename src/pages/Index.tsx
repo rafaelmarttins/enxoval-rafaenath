@@ -185,18 +185,21 @@ const Index = () => {
 
   const percentualConclusao = totalItens === 0 ? 0 : Math.round((totalItensAdquiridos / totalItens) * 100);
 
-  const valorTotalEstimado = useMemo(
-    () => items.reduce((acc, i) => (i.status === "Comprado" || i.status === "Presenteado" ? acc + i.valorUnitario : acc), 0),
-    [items],
-  );
-
   const valorJaAdquirido = useMemo(
-    () => items.reduce((acc, i) => (i.status === "Comprado" ? acc + i.valorUnitario : acc), 0),
+    () =>
+      items.reduce(
+        (acc, i) => acc + i.quantidadeAdquirida * i.valorUnitario,
+        0,
+      ),
     [items],
   );
 
   const valorRestante = useMemo(
-    () => items.reduce((acc, i) => (i.status === "Não comprado" ? acc + i.valorUnitario : acc), 0),
+    () =>
+      items.reduce((acc, i) => {
+        const faltam = Math.max(0, i.quantidadeDesejada - i.quantidadeAdquirida);
+        return acc + faltam * i.valorUnitario;
+      }, 0),
     [items],
   );
 
@@ -621,14 +624,14 @@ const Index = () => {
           <Card>
             <CardHeader className="flex items-start justify-between pb-2">
               <div>
-                <CardTitle className="text-sm font-medium">Total gasto</CardTitle>
+                <CardTitle className="text-sm font-medium">Total já gasto</CardTitle>
               </div>
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
                 <Wallet className="h-4 w-4" />
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-semibold">{formatCurrency(valorTotalEstimado)}</p>
+              <p className="text-3xl font-semibold">{formatCurrency(valorJaAdquirido)}</p>
               <p className="text-xs text-muted-foreground">Considerando o que já foi comprado</p>
             </CardContent>
           </Card>
@@ -643,7 +646,7 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-semibold">{formatCurrency(valorRestante)}</p>
-              <p className="text-xs text-muted-foreground">Somente itens não comprados</p>
+              <p className="text-xs text-muted-foreground">Considerando quantidades e valores</p>
             </CardContent>
           </Card>
         </section>
@@ -830,7 +833,10 @@ const Index = () => {
 
                       <div className="space-y-1 text-xs text-muted-foreground">
                         <p>
-                          Quantidade: <span className="font-medium">{item.quantidadeDesejada}</span> unidade(s)
+                          Quantidade desejada: <span className="font-medium">{item.quantidadeDesejada}</span> unidade(s)
+                        </p>
+                        <p>
+                          Quantidade já adquirida: <span className="font-medium">{item.quantidadeAdquirida}</span> unidade(s)
                         </p>
                         {item.productUrl && (
                           <a
@@ -847,8 +853,10 @@ const Index = () => {
 
                       <div className="mt-auto flex items-center justify-between pt-2">
                         <div className="space-y-0.5">
-                          <p className="text-xs text-muted-foreground">Valor total</p>
-                          <p className="text-base font-semibold">{formatCurrency(item.valorUnitario)}</p>
+                          <p className="text-xs text-muted-foreground">Valor total do item</p>
+                          <p className="text-base font-semibold">
+                            {formatCurrency(item.valorUnitario * item.quantidadeDesejada)}
+                          </p>
                         </div>
                         <div className="flex gap-1">
                           {item.status !== "Comprado" && (
@@ -913,9 +921,9 @@ const Index = () => {
                       <TableHead>Categoria</TableHead>
                       <TableHead>Prioridade</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Qtd.</TableHead>
+                      <TableHead>Qtd. (desejada / adquirida)</TableHead>
                       <TableHead>Loja</TableHead>
-                      <TableHead>Valor</TableHead>
+                      <TableHead>Valor total</TableHead>
                       <TableHead className="text-right">Ações</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -940,15 +948,23 @@ const Index = () => {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          {item.status === "Comprado"
-                            ? "Comprado"
-                            : item.status === "Presenteado"
-                              ? "Presenteado"
-                              : "Não comprado"}
+                          <Badge
+                            variant={
+                              item.status === "Comprado"
+                                ? "default"
+                                : item.status === "Presenteado"
+                                  ? "secondary"
+                                  : "outline"
+                            }
+                          >
+                            {item.status}
+                          </Badge>
                         </TableCell>
-                        <TableCell>{item.quantidadeDesejada}</TableCell>
+                        <TableCell>
+                          {item.quantidadeDesejada} / {item.quantidadeAdquirida}
+                        </TableCell>
                         <TableCell>{item.loja ?? "-"}</TableCell>
-                        <TableCell>{formatCurrency(item.valorUnitario)}</TableCell>
+                        <TableCell>{formatCurrency(item.valorUnitario * item.quantidadeDesejada)}</TableCell>
                         <TableCell>
                           <div className="flex items-center justify-end gap-1">
                             {item.status !== "Comprado" && (
@@ -1143,7 +1159,7 @@ const Index = () => {
                 )}
               </div>
               <div className="space-y-1">
-                <Label htmlFor="valorUnitario">Valor total (R$)</Label>
+                <Label htmlFor="valorUnitario">Valor unitário (R$)</Label>
                 <Input
                   id="valorUnitario"
                   type="number"
