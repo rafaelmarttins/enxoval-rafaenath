@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag } from "lucide-react";
+import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag, Table as TableIcon, LayoutGrid } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -118,8 +119,8 @@ const Index = () => {
   const [formImageFile, setFormImageFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-
   const [itemParaExcluir, setItemParaExcluir] = useState<EnxovalItem | null>(null);
+  const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
 
   useEffect(() => {
     const carregarItens = async () => {
@@ -732,142 +733,269 @@ const Index = () => {
           </div>
 
           {temFiltrosAtivos && (
-            <div className="flex justify-end">
+            <div className="flex items-center justify-between gap-2">
               <Button variant="ghost" size="sm" className="px-0 text-xs" onClick={limparFiltros}>
                 Limpar filtros
               </Button>
+              <div className="inline-flex items-center gap-1 rounded-md border bg-background p-1 text-xs">
+                <span className="hidden pl-2 text-muted-foreground md:inline">Visualização:</span>
+                <Button
+                  type="button"
+                  variant={viewMode === "cards" ? "default" : "ghost"}
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={() => setViewMode("cards")}
+                  title="Ver em cartões"
+                >
+                  <LayoutGrid className="h-3 w-3" />
+                </Button>
+                <Button
+                  type="button"
+                  variant={viewMode === "table" ? "default" : "ghost"}
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={() => setViewMode("table")}
+                  title="Ver em tabela"
+                >
+                  <TableIcon className="h-3 w-3" />
+                </Button>
+              </div>
             </div>
           )}
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {loadingItems ? (
-              <p className="col-span-full text-sm text-muted-foreground">Carregando itens...</p>
-            ) : itensFiltradosEOrdenados.length === 0 ? (
-              <p className="col-span-full text-sm text-muted-foreground">
-                Nenhum item encontrado. Adicione um novo item para começar.
-              </p>
-            ) : (
-              itensFiltradosEOrdenados.map((item) => (
-                <Card
-                  key={item.id}
-                  className={cn(
-                    "flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md",
-                    item.prioridade === "Alta" && "border-amber-300 bg-amber-50/80 animate-fade-in",
-                  )}
-                >
-                  {item.imageUrl && (
-                    <div className="relative h-40 w-full overflow-hidden bg-muted">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={item.imageUrl}
-                        alt={item.nome}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <CardContent className="flex flex-1 flex-col gap-3 p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="space-y-1">
-                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                          {item.status === "Comprado" ? (
-                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
-                              COMPRADO
-                            </span>
-                          ) : item.status === "Presenteado" ? (
-                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                              PRESENTEADO
-                            </span>
-                          ) : (
-                            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                              NÃO COMPRADO
-                            </span>
-                          )}
-                        </p>
-                        <h2 className="text-sm font-semibold leading-snug">{item.nome}</h2>
+          {viewMode === "cards" ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {loadingItems ? (
+                <p className="col-span-full text-sm text-muted-foreground">Carregando itens...</p>
+              ) : itensFiltradosEOrdenados.length === 0 ? (
+                <p className="col-span-full text-sm text-muted-foreground">
+                  Nenhum item encontrado. Adicione um novo item para começar.
+                </p>
+              ) : (
+                itensFiltradosEOrdenados.map((item) => (
+                  <Card
+                    key={item.id}
+                    className={cn(
+                      "flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md",
+                      item.prioridade === "Alta" && "border-amber-300 bg-amber-50/80 animate-fade-in",
+                    )}
+                  >
+                    {item.imageUrl && (
+                      <div className="relative h-40 w-full overflow-hidden bg-muted">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={item.imageUrl}
+                          alt={item.nome}
+                          className="h-full w-full object-cover"
+                        />
                       </div>
-                      <Badge
-                        variant={
-                          item.prioridade === "Alta" ? "destructive" : item.prioridade === "Média" ? "default" : "secondary"
-                        }
-                      >
-                        {item.prioridade}
-                      </Badge>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1 text-xs">
-                      <Badge variant="outline">{item.categoria}</Badge>
-                      {item.loja && <Badge variant="outline">{item.loja}</Badge>}
-                    </div>
-
-                    <div className="space-y-1 text-xs text-muted-foreground">
-                      <p>
-                        Quantidade: <span className="font-medium">{item.quantidadeDesejada}</span> unidade(s)
-                      </p>
-                      {item.productUrl && (
-                        <a
-                          href={item.productUrl}
-                          target="_blank"
-                          rel="noreferrer noopener"
-                          className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                    )}
+                    <CardContent className="flex flex-1 flex-col gap-3 p-4">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-1">
+                          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            {item.status === "Comprado" ? (
+                              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                                COMPRADO
+                              </span>
+                            ) : item.status === "Presenteado" ? (
+                              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                                PRESENTEADO
+                              </span>
+                            ) : (
+                              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                                NÃO COMPRADO
+                              </span>
+                            )}
+                          </p>
+                          <h2 className="text-sm font-semibold leading-snug">{item.nome}</h2>
+                        </div>
+                        <Badge
+                          variant={
+                            item.prioridade === "Alta" ? "destructive" : item.prioridade === "Média" ? "default" : "secondary"
+                          }
                         >
-                          Ver link da loja <ExternalLink className="h-3 w-3" />
-                        </a>
-                      )}
-                      {item.observacoes && <p className="line-clamp-2">{item.observacoes}</p>}
-                    </div>
-
-                    <div className="mt-auto flex items-center justify-between pt-2">
-                      <div className="space-y-0.5">
-                        <p className="text-xs text-muted-foreground">Valor total</p>
-                        <p className="text-base font-semibold">{formatCurrency(item.valorUnitario)}</p>
+                          {item.prioridade}
+                        </Badge>
                       </div>
-                      <div className="flex gap-1">
-                        {item.status !== "Comprado" && (
-                          <Button
-                            size="icon"
-                            variant="outline"
-                            className="h-8 w-8"
-                            title="Marcar como comprado"
-                            onClick={() => marcarStatus(item, "Comprado")}
-                          >
-                            <CheckCircle2 className="h-4 w-4" />
-                          </Button>
-                        )}
-                        {item.status !== "Presenteado" && (
-                          <Button
-                            size="icon"
-                            variant="outline"
-                            className="h-8 w-8"
-                            title="Marcar como presenteado"
-                            onClick={() => marcarStatus(item, "Presenteado")}
-                          >
-                            <Gift className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
 
-                    <div className="mt-2 flex items-center justify-end gap-3 border-t pt-3 text-xs">
-                      <button
-                        type="button"
-                        className="font-medium text-muted-foreground hover:text-foreground"
-                        onClick={() => abrirEdicao(item)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        type="button"
-                        className="font-medium text-destructive hover:underline"
-                        onClick={() => confirmarExclusao(item)}
-                      >
-                        Excluir
-                      </button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+                      <div className="flex flex-wrap gap-1 text-xs">
+                        <Badge variant="outline">{item.categoria}</Badge>
+                        {item.loja && <Badge variant="outline">{item.loja}</Badge>}
+                      </div>
+
+                      <div className="space-y-1 text-xs text-muted-foreground">
+                        <p>
+                          Quantidade: <span className="font-medium">{item.quantidadeDesejada}</span> unidade(s)
+                        </p>
+                        {item.productUrl && (
+                          <a
+                            href={item.productUrl}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                          >
+                            Ver link da loja <ExternalLink className="h-3 w-3" />
+                          </a>
+                        )}
+                        {item.observacoes && <p className="line-clamp-2">{item.observacoes}</p>}
+                      </div>
+
+                      <div className="mt-auto flex items-center justify-between pt-2">
+                        <div className="space-y-0.5">
+                          <p className="text-xs text-muted-foreground">Valor total</p>
+                          <p className="text-base font-semibold">{formatCurrency(item.valorUnitario)}</p>
+                        </div>
+                        <div className="flex gap-1">
+                          {item.status !== "Comprado" && (
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="h-8 w-8"
+                              title="Marcar como comprado"
+                              onClick={() => marcarStatus(item, "Comprado")}
+                            >
+                              <CheckCircle2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {item.status !== "Presenteado" && (
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              className="h-8 w-8"
+                              title="Marcar como presenteado"
+                              onClick={() => marcarStatus(item, "Presenteado")}
+                            >
+                              <Gift className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="mt-2 flex items-center justify-end gap-3 border-t pt-3 text-xs">
+                        <button
+                          type="button"
+                          className="font-medium text-muted-foreground hover:text-foreground"
+                          onClick={() => abrirEdicao(item)}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          type="button"
+                          className="font-medium text-destructive hover:underline"
+                          onClick={() => confirmarExclusao(item)}
+                        >
+                          Excluir
+                        </button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          ) : (
+            <div className="w-full overflow-x-auto rounded-md border">
+              {loadingItems ? (
+                <div className="p-4 text-sm text-muted-foreground">Carregando itens...</div>
+              ) : itensFiltradosEOrdenados.length === 0 ? (
+                <div className="p-4 text-sm text-muted-foreground">
+                  Nenhum item encontrado. Adicione um novo item para começar.
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>Categoria</TableHead>
+                      <TableHead>Prioridade</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Qtd.</TableHead>
+                      <TableHead>Loja</TableHead>
+                      <TableHead>Valor</TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {itensFiltradosEOrdenados.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="max-w-xs truncate" title={item.nome}>
+                          {item.nome}
+                        </TableCell>
+                        <TableCell>{item.categoria}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              item.prioridade === "Alta"
+                                ? "destructive"
+                                : item.prioridade === "Média"
+                                  ? "default"
+                                  : "secondary"
+                            }
+                          >
+                            {item.prioridade}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {item.status === "Comprado"
+                            ? "Comprado"
+                            : item.status === "Presenteado"
+                              ? "Presenteado"
+                              : "Não comprado"}
+                        </TableCell>
+                        <TableCell>{item.quantidadeDesejada}</TableCell>
+                        <TableCell>{item.loja ?? "-"}</TableCell>
+                        <TableCell>{formatCurrency(item.valorUnitario)}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-end gap-1">
+                            {item.status !== "Comprado" && (
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                className="h-7 w-7"
+                                title="Marcar como comprado"
+                                onClick={() => marcarStatus(item, "Comprado")}
+                              >
+                                <CheckCircle2 className="h-3 w-3" />
+                              </Button>
+                            )}
+                            {item.status !== "Presenteado" && (
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                className="h-7 w-7"
+                                title="Marcar como presenteado"
+                                onClick={() => marcarStatus(item, "Presenteado")}
+                              >
+                                <Gift className="h-3 w-3" />
+                              </Button>
+                            )}
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7"
+                              title="Editar item"
+                              onClick={() => abrirEdicao(item)}
+                            >
+                              <Pencil className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7 text-destructive hover:text-destructive"
+                              title="Excluir item"
+                              onClick={() => confirmarExclusao(item)}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </div>
+          )}
         </section>
 
         <Dialog
