@@ -95,13 +95,13 @@ const Dashboard = () => {
 
   const percentualConclusao = totalItens === 0 ? 0 : Math.round(((totalComprados + totalPresenteados) / totalItens) * 100);
 
-  const valorTotalPlanejado = useMemo(
+  const valorTotalPlanejadoGeral = useMemo(
     () => items.reduce((acc, i) => acc + i.quantidadeDesejada * i.valorUnitario, 0),
     [items],
   );
 
-  const valorJaGasto = useMemo(
-    () => items.reduce((acc, i) => (i.status === "Comprado" ? acc + i.quantidadeAdquirida * i.valorUnitario : acc), 0),
+  const valorTotalEnxoval = useMemo(
+    () => items.reduce((acc, i) => (i.status !== "Não comprado" ? acc + i.quantidadeDesejada * i.valorUnitario : acc), 0),
     [items],
   );
 
@@ -187,7 +187,7 @@ const Dashboard = () => {
               <CardTitle className="text-sm font-medium">Total do enxoval</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">{formatCurrency(valorTotalPlanejado)}</p>
+              <p className="text-2xl font-semibold">{formatCurrency(valorTotalEnxoval)}</p>
             </CardContent>
           </Card>
           <Card>
@@ -274,9 +274,9 @@ const Dashboard = () => {
                         className="h-full rounded-full bg-primary/70"
                         style={{
                           width:
-                            valorTotalPlanejado === 0
+                            valorTotalPlanejadoGeral === 0
                               ? "0%"
-                              : `${Math.min(100, (categ.valor / valorTotalPlanejado) * 100).toFixed(0)}%`,
+                              : `${Math.min(100, (categ.valor / valorTotalPlanejadoGeral) * 100).toFixed(0)}%`,
                         }}
                       />
                     </div>
