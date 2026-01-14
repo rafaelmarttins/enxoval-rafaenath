@@ -69,7 +69,7 @@ const Auth = () => {
           description: "Verifique seu email para confirmar o cadastro.",
         });
 
-        navigate("/");
+        navigate("/itens");
         return;
       }
 
@@ -92,7 +92,7 @@ const Auth = () => {
         description: "Bem-vindo(a) de volta!",
       });
 
-      navigate("/");
+      navigate("/itens");
     } catch (err) {
       console.error("Erro na autenticação", err);
       toast({

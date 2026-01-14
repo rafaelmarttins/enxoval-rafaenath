@@ -122,6 +122,7 @@ const Index = () => {
 
   const [items, setItems] = useState<EnxovalItem[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [loadingItems, setLoadingItems] = useState(true);
   const [busca, setBusca] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
   const [filtroStatus, setFiltroStatus] = useState<string>("todos");
@@ -151,12 +152,14 @@ const Index = () => {
 
   useEffect(() => {
     const carregarItens = async () => {
-      // tenta identificar usuário logado; se não houver, volta a usar apenas localStorage
+      setLoadingItems(true);
+
       const { data: authData } = await supabase.auth.getUser();
       const user = authData?.user;
 
       if (!user) {
         setItems(loadItems());
+        setLoadingItems(false);
         return;
       }
 
@@ -165,12 +168,13 @@ const Index = () => {
       const { data, error } = await supabase
         .from("enxoval_items")
         .select("*")
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
       if (error || !data) {
         console.error("Erro ao carregar itens do backend:", error);
-        // se der erro no backend, mantém comportamento antigo com localStorage
         setItems(loadItems());
+        setLoadingItems(false);
         return;
       }
 
@@ -190,14 +194,17 @@ const Index = () => {
       }));
 
       setItems(mapeados);
+      setLoadingItems(false);
     };
 
     carregarItens();
   }, []);
 
   useEffect(() => {
-    saveItems(items);
-  }, [items]);
+    if (!currentUserId) {
+      saveItems(items);
+    }
+  }, [items, currentUserId]);
 
   const totalItens = items.length;
   const totalItensAdquiridos = useMemo(
@@ -763,7 +770,9 @@ const Index = () => {
           )}
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {itensFiltradosEOrdenados.length === 0 ? (
+            {loadingItems ? (
+              <p className="col-span-full text-sm text-muted-foreground">Carregando itens...</p>
+            ) : itensFiltradosEOrdenados.length === 0 ? (
               <p className="col-span-full text-sm text-muted-foreground">
                 Nenhum item encontrado. Adicione um novo item para começar.
               </p>
