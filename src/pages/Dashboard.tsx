@@ -96,11 +96,11 @@ const Dashboard = () => {
   const percentualConclusao = totalItens === 0 ? 0 : Math.round(((totalComprados + totalPresenteados) / totalItens) * 100);
 
   const valorTotalEstimado = useMemo(
-    () => items.reduce((acc, i) => acc + i.valorUnitario, 0),
+    () => items.reduce((acc, i) => (i.status === "Comprado" || i.status === "Presenteado" ? acc + i.valorUnitario : acc), 0),
     [items],
   );
   const valorJaAdquirido = useMemo(
-    () => items.reduce((acc, i) => (i.status === "Não comprado" ? acc : acc + i.valorUnitario), 0),
+    () => items.reduce((acc, i) => (i.status === "Comprado" ? acc + i.valorUnitario : acc), 0),
     [items],
   );
   const valorRestante = Math.max(valorTotalEstimado - valorJaAdquirido, 0);
