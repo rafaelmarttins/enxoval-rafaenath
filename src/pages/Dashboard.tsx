@@ -183,14 +183,17 @@ const Dashboard = () => {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className="flex items-center justify-between pb-2">
-              <div className="flex items-center gap-2">
+            <CardHeader className="flex items-start justify-between pb-2">
+              <div>
                 <CardTitle className="text-sm font-medium">Total gasto</CardTitle>
-                <Wallet className="h-4 w-4 text-emerald-600" />
+              </div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                <Wallet className="h-4 w-4" />
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-semibold">{formatCurrency(valorTotalEnxoval)}</p>
+              <p className="text-xs text-muted-foreground">Considerando o que já foi comprado</p>
             </CardContent>
           </Card>
           <Card>
