@@ -51,6 +51,8 @@ const PRIORIDADES = ["Alta", "Média", "Baixa"] as const;
 
 const STATUS = ["Não comprado", "Comprado", "Presenteado"] as const;
 
+const LOJAS_PRE_DEFINIDAS = ["Mercado Livre", "Shopee", "Amazon"] as const;
+
 type Categoria = (typeof CATEGORIAS)[number];
 type Prioridade = (typeof PRIORIDADES)[number];
 type Status = (typeof STATUS)[number];
@@ -1080,12 +1082,44 @@ const Index = () => {
               </div>
               <div className="space-y-1">
                 <Label htmlFor="loja">Loja / fornecedor (opcional)</Label>
-                <Input
-                  id="loja"
-                  value={formLoja}
-                  onChange={(e) => setFormLoja(e.target.value)}
-                  placeholder="Ex.: Loja X, site Y"
-                />
+                <div className="space-y-2">
+                  <Select
+                    value={
+                      LOJAS_PRE_DEFINIDAS.includes(formLoja as (typeof LOJAS_PRE_DEFINIDAS)[number])
+                        ? formLoja
+                        : formLoja
+                          ? "outra"
+                          : ""
+                    }
+                    onValueChange={(value) => {
+                      if (value === "outra") {
+                        setFormLoja("");
+                      } else {
+                        setFormLoja(value);
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione a loja" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {LOJAS_PRE_DEFINIDAS.map((loja) => (
+                        <SelectItem key={loja} value={loja}>
+                          {loja}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="outra">Outra loja</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {(formLoja && !LOJAS_PRE_DEFINIDAS.includes(formLoja as (typeof LOJAS_PRE_DEFINIDAS)[number])) && (
+                    <Input
+                      id="loja"
+                      value={formLoja}
+                      onChange={(e) => setFormLoja(e.target.value)}
+                      placeholder="Digite o nome da loja"
+                    />
+                  )}
+                </div>
               </div>
               <div className="space-y-1 md:col-span-2">
                 <Label htmlFor="observacoes">Observações (opcional)</Label>
