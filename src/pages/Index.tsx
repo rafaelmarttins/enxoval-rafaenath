@@ -732,36 +732,40 @@ const Index = () => {
             </div>
           </div>
 
-          {temFiltrosAtivos && (
-            <div className="flex items-center justify-between gap-2">
-              <Button variant="ghost" size="sm" className="px-0 text-xs" onClick={limparFiltros}>
-                Limpar filtros
+          <div className="flex items-center justify-between gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="px-0 text-xs"
+              onClick={limparFiltros}
+              disabled={!temFiltrosAtivos}
+            >
+              Limpar filtros
+            </Button>
+            <div className="inline-flex items-center gap-1 rounded-md border bg-background p-1 text-xs">
+              <span className="hidden pl-2 text-muted-foreground md:inline">Visualização:</span>
+              <Button
+                type="button"
+                variant={viewMode === "cards" ? "default" : "ghost"}
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => setViewMode("cards")}
+                title="Ver em cartões"
+              >
+                <LayoutGrid className="h-3 w-3" />
               </Button>
-              <div className="inline-flex items-center gap-1 rounded-md border bg-background p-1 text-xs">
-                <span className="hidden pl-2 text-muted-foreground md:inline">Visualização:</span>
-                <Button
-                  type="button"
-                  variant={viewMode === "cards" ? "default" : "ghost"}
-                  size="icon"
-                  className="h-7 w-7"
-                  onClick={() => setViewMode("cards")}
-                  title="Ver em cartões"
-                >
-                  <LayoutGrid className="h-3 w-3" />
-                </Button>
-                <Button
-                  type="button"
-                  variant={viewMode === "table" ? "default" : "ghost"}
-                  size="icon"
-                  className="h-7 w-7"
-                  onClick={() => setViewMode("table")}
-                  title="Ver em tabela"
-                >
-                  <TableIcon className="h-3 w-3" />
-                </Button>
-              </div>
+              <Button
+                type="button"
+                variant={viewMode === "table" ? "default" : "ghost"}
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => setViewMode("table")}
+                title="Ver em tabela"
+              >
+                <TableIcon className="h-3 w-3" />
+              </Button>
             </div>
-          )}
+          </div>
 
           {viewMode === "cards" ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
