@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift } from "lucide-react";
+import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,15 +29,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -73,6 +64,8 @@ type EnxovalItem = {
   status: Status;
   loja?: string;
   observacoes?: string;
+  imageUrl?: string;
+  productUrl?: string;
 };
 
 type SortField = "nome" | "prioridade";
@@ -142,6 +135,8 @@ const Index = () => {
   const [formStatus, setFormStatus] = useState<Status | "">("");
   const [formLoja, setFormLoja] = useState("");
   const [formObservacoes, setFormObservacoes] = useState("");
+  const [formImageUrl, setFormImageUrl] = useState("");
+  const [formProductUrl, setFormProductUrl] = useState("");
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const [itemParaExcluir, setItemParaExcluir] = useState<EnxovalItem | null>(null);
@@ -214,6 +209,8 @@ const Index = () => {
     setFormStatus("");
     setFormLoja("");
     setFormObservacoes("");
+    setFormImageUrl("");
+    setFormProductUrl("");
     setFormErrors({});
   }
 
@@ -233,6 +230,8 @@ const Index = () => {
     setFormStatus(item.status);
     setFormLoja(item.loja ?? "");
     setFormObservacoes(item.observacoes ?? "");
+    setFormImageUrl(item.imageUrl ?? "");
+    setFormProductUrl(item.productUrl ?? "");
     setFormErrors({});
     setIsDialogOpen(true);
   }
@@ -263,6 +262,10 @@ const Index = () => {
     if (!formPrioridade) errors.prioridade = "Selecione a prioridade.";
     if (!formStatus) errors.status = "Selecione o status.";
 
+    if (formProductUrl && !/^https?:\/\//i.test(formProductUrl.trim())) {
+      errors.productUrl = "Informe um link válido começando com http:// ou https://";
+    }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   }
@@ -287,6 +290,8 @@ const Index = () => {
       status: formStatus as Status,
       loja: formLoja.trim() || undefined,
       observacoes: formObservacoes.trim() || undefined,
+      imageUrl: formImageUrl.trim() || undefined,
+      productUrl: formProductUrl.trim() || undefined,
     };
 
     if (editingItem) {
@@ -354,6 +359,7 @@ const Index = () => {
         "Prioridade",
         "Status",
         "Loja / fornecedor",
+        "Link do produto",
         "Observações",
       ],
       ...items.map((i) => [
@@ -365,6 +371,7 @@ const Index = () => {
         i.prioridade,
         i.status,
         i.loja ?? "",
+        i.productUrl ?? "",
         (i.observacoes ?? "").replace(/\n/g, " "),
       ]),
     ];
@@ -396,10 +403,10 @@ const Index = () => {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Heart className="h-7 w-7 text-primary" />
-              <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Enxoval de casamento</h1>
+              <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Itens do enxoval</h1>
             </div>
             <p className="text-sm text-muted-foreground">
-              Organize todos os itens do seu enxoval, acompanhe o progresso e mantenha o controle de gastos.
+              Veja tudo o que você já comprou e o que ainda falta.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -474,7 +481,7 @@ const Index = () => {
                     <SelectValue placeholder="Todas" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="todas">Todas</SelectItem>
+                    <SelectItem value="todas">Todos os ambientes</SelectItem>
                     {CATEGORIAS.map((categoria) => (
                       <SelectItem key={categoria} value={categoria}>
                         {categoria}
@@ -534,44 +541,44 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <Table>
-              <TableCaption>
-                {itensFiltradosEOrdenados.length === 0
-                  ? "Nenhum item encontrado. Adicione um novo item para começar."
-                  : `${itensFiltradosEOrdenados.length} item(s) exibido(s).`}
-              </TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Item</TableHead>
-                  <TableHead>Categoria</TableHead>
-                  <TableHead>Quantidade</TableHead>
-                  <TableHead>Valor unitário</TableHead>
-                  <TableHead>Prioridade</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-[140px] text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {itensFiltradosEOrdenados.map((item) => (
-                  <TableRow key={item.id} className="align-top">
-                    <TableCell>
-                      <div className="font-medium">{item.nome}</div>
-                      {item.loja && <div className="text-xs text-muted-foreground">Loja: {item.loja}</div>}
-                      {item.observacoes && (
-                        <div className="mt-1 text-xs text-muted-foreground line-clamp-2">
-                          {item.observacoes}
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell>{item.categoria}</TableCell>
-                    <TableCell>
-                      <div className="text-sm font-medium">
-                        {item.quantidadeAdquirida} / {item.quantidadeDesejada}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {itensFiltradosEOrdenados.length === 0 ? (
+              <p className="col-span-full text-sm text-muted-foreground">
+                Nenhum item encontrado. Adicione um novo item para começar.
+              </p>
+            ) : (
+              itensFiltradosEOrdenados.map((item) => (
+                <Card key={item.id} className="flex h-full flex-col overflow-hidden">
+                  {item.imageUrl && (
+                    <div className="relative h-40 w-full overflow-hidden bg-muted">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.imageUrl}
+                        alt={item.nome}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <CardContent className="flex flex-1 flex-col gap-3 p-4">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          {item.status === "Comprado" ? (
+                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                              COMPRADO
+                            </span>
+                          ) : item.status === "Presenteado" ? (
+                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                              PRESENTEADO
+                            </span>
+                          ) : (
+                            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                              NÃO COMPRADO
+                            </span>
+                          )}
+                        </p>
+                        <h2 className="text-sm font-semibold leading-snug">{item.nome}</h2>
                       </div>
-                    </TableCell>
-                    <TableCell>{formatCurrency(item.valorUnitario)}</TableCell>
-                    <TableCell>
                       <Badge
                         variant={
                           item.prioridade === "Alta" ? "destructive" : item.prioridade === "Média" ? "default" : "secondary"
@@ -579,22 +586,37 @@ const Index = () => {
                       >
                         {item.prioridade}
                       </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          item.status === "Comprado"
-                            ? "outline"
-                            : item.status === "Presenteado"
-                              ? "default"
-                              : "secondary"
-                        }
-                      >
-                        {item.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="space-y-1 text-right">
-                      <div className="flex justify-end gap-1">
+                    </div>
+
+                    <div className="flex flex-wrap gap-1 text-xs">
+                      <Badge variant="outline">{item.categoria}</Badge>
+                      {item.loja && <Badge variant="outline">{item.loja}</Badge>}
+                    </div>
+
+                    <div className="space-y-1 text-xs text-muted-foreground">
+                      <p>
+                        Quantidade: <span className="font-medium">{item.quantidadeAdquirida}</span> de
+                        <span className="font-medium"> {item.quantidadeDesejada}</span>
+                      </p>
+                      {item.productUrl && (
+                        <a
+                          href={item.productUrl}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                        >
+                          Ver link da loja <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                      {item.observacoes && <p className="line-clamp-2">{item.observacoes}</p>}
+                    </div>
+
+                    <div className="mt-auto flex items-center justify-between pt-2">
+                      <div className="space-y-0.5">
+                        <p className="text-xs text-muted-foreground">Valor unitário</p>
+                        <p className="text-base font-semibold">{formatCurrency(item.valorUnitario)}</p>
+                      </div>
+                      <div className="flex gap-1">
                         {item.status !== "Comprado" && (
                           <Button
                             size="icon"
@@ -617,30 +639,29 @@ const Index = () => {
                             <Gift className="h-4 w-4" />
                           </Button>
                         )}
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-8 w-8"
-                          title="Editar item"
-                          onClick={() => abrirEdicao(item)}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-8 w-8 text-destructive"
-                          title="Excluir item"
-                          onClick={() => confirmarExclusao(item)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                    </div>
+
+                    <div className="mt-2 flex items-center justify-end gap-3 border-t pt-3 text-xs">
+                      <button
+                        type="button"
+                        className="font-medium text-muted-foreground hover:text-foreground"
+                        onClick={() => abrirEdicao(item)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        type="button"
+                        className="font-medium text-destructive hover:underline"
+                        onClick={() => confirmarExclusao(item)}
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </section>
 
@@ -662,9 +683,28 @@ const Index = () => {
                   id="nome"
                   value={formNome}
                   onChange={(e) => setFormNome(e.target.value)}
-                  placeholder="Ex.: Jogo de lençol casal"
+                  placeholder="Ex.: Jogo de copos de vidro"
                 />
                 {formErrors.nome && <p className="text-xs text-destructive">{formErrors.nome}</p>}
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <Label htmlFor="imageUrl">URL da imagem (opcional)</Label>
+                <Input
+                  id="imageUrl"
+                  value={formImageUrl}
+                  onChange={(e) => setFormImageUrl(e.target.value)}
+                  placeholder="Cole aqui o link da foto do produto"
+                />
+              </div>
+              <div className="space-y-1 md:col-span-2">
+                <Label htmlFor="productUrl">Link do produto (opcional)</Label>
+                <Input
+                  id="productUrl"
+                  value={formProductUrl}
+                  onChange={(e) => setFormProductUrl(e.target.value)}
+                  placeholder="Ex.: https://www.sualoja.com/produto"
+                />
+                {formErrors.productUrl && <p className="text-xs text-destructive">{formErrors.productUrl}</p>}
               </div>
               <div className="space-y-1">
                 <Label>Categoria</Label>
