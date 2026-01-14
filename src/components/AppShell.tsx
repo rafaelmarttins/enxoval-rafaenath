@@ -42,7 +42,7 @@ export function AppSidebar() {
                       to="/"
                       end
                       className="flex items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
-                      activeClassName="bg-background text-foreground shadow-sm"
+                      activeClassName="bg-primary/10 text-primary shadow-sm border border-primary/40"
                     >
                       <Home className="h-4 w-4" />
                       <span>Dashboard</span>
@@ -54,7 +54,7 @@ export function AppSidebar() {
                     <NavLink
                       to="/itens"
                       className="flex items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
-                      activeClassName="bg-background text-foreground shadow-sm"
+                      activeClassName="bg-primary/10 text-primary shadow-sm border border-primary/40"
                     >
                       <ListChecks className="h-4 w-4" />
                       <span>Itens do enxoval</span>
