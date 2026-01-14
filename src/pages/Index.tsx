@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink } from "lucide-react";
+import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -137,6 +138,8 @@ const Index = () => {
   const [formObservacoes, setFormObservacoes] = useState("");
   const [formImageUrl, setFormImageUrl] = useState("");
   const [formProductUrl, setFormProductUrl] = useState("");
+  const [formImageFile, setFormImageFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const [itemParaExcluir, setItemParaExcluir] = useState<EnxovalItem | null>(null);
@@ -211,7 +214,39 @@ const Index = () => {
     setFormObservacoes("");
     setFormImageUrl("");
     setFormProductUrl("");
+    setFormImageFile(null);
     setFormErrors({});
+  }
+
+  async function uploadImageFile(file: File): Promise<string | null> {
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("enxoval-images")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        console.error("Upload error:", uploadError);
+        toast({
+          title: "Erro no upload",
+          description: "Não foi possível enviar a imagem.",
+          variant: "destructive",
+        });
+        return null;
+      }
+
+      const { data } = supabase.storage.from("enxoval-images").getPublicUrl(filePath);
+      return data.publicUrl;
+    } catch (error) {
+      console.error("Unexpected upload error:", error);
+      return null;
+    }
   }
 
   function abrirNovoItem() {
@@ -270,7 +305,7 @@ const Index = () => {
     return Object.keys(errors).length === 0;
   }
 
-  function handleSalvarItem() {
+  async function handleSalvarItem() {
     if (!validarFormulario()) {
       toast({
         title: "Verifique o formulário",
@@ -279,6 +314,19 @@ const Index = () => {
       });
       return;
     }
+
+    setUploadingImage(true);
+
+    let finalImageUrl = formImageUrl.trim();
+
+    if (formImageFile) {
+      const uploadedUrl = await uploadImageFile(formImageFile);
+      if (uploadedUrl) {
+        finalImageUrl = uploadedUrl;
+      }
+    }
+
+    setUploadingImage(false);
 
     const novoItemBase: Omit<EnxovalItem, "id"> = {
       nome: formNome.trim(),
@@ -290,7 +338,7 @@ const Index = () => {
       status: formStatus as Status,
       loja: formLoja.trim() || undefined,
       observacoes: formObservacoes.trim() || undefined,
-      imageUrl: formImageUrl.trim() || undefined,
+      imageUrl: finalImageUrl || undefined,
       productUrl: formProductUrl.trim() || undefined,
     };
 
@@ -687,13 +735,67 @@ const Index = () => {
                 {formErrors.nome && <p className="text-xs text-destructive">{formErrors.nome}</p>}
               </div>
               <div className="space-y-1 md:col-span-2">
-                <Label htmlFor="imageUrl">URL da imagem (opcional)</Label>
-                <Input
-                  id="imageUrl"
-                  value={formImageUrl}
-                  onChange={(e) => setFormImageUrl(e.target.value)}
-                  placeholder="Cole aqui o link da foto do produto"
-                />
+                <Label>Foto do produto (opcional)</Label>
+                <div className="space-y-2">
+                  {!formImageFile && !formImageUrl && (
+                    <div className="flex items-center gap-2">
+                      <label
+                        htmlFor="imageFile"
+                        className="flex cursor-pointer items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                      >
+                        <Upload className="h-4 w-4" />
+                        <span>Enviar foto</span>
+                      </label>
+                      <input
+                        id="imageFile"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setFormImageFile(file);
+                            setFormImageUrl("");
+                          }
+                        }}
+                      />
+                      <span className="text-xs text-muted-foreground">ou</span>
+                      <Input
+                        placeholder="Cole o link da imagem"
+                        value={formImageUrl}
+                        onChange={(e) => {
+                          setFormImageUrl(e.target.value);
+                          setFormImageFile(null);
+                        }}
+                        className="flex-1"
+                      />
+                    </div>
+                  )}
+                  {formImageFile && (
+                    <div className="flex items-center gap-2 rounded-md border border-input bg-muted/40 p-2">
+                      <div className="flex-1 truncate text-sm">{formImageFile.name}</div>
+                      <button
+                        type="button"
+                        onClick={() => setFormImageFile(null)}
+                        className="rounded-full p-1 hover:bg-destructive/10"
+                      >
+                        <X className="h-4 w-4 text-destructive" />
+                      </button>
+                    </div>
+                  )}
+                  {formImageUrl && !formImageFile && (
+                    <div className="flex items-center gap-2 rounded-md border border-input bg-muted/40 p-2">
+                      <div className="flex-1 truncate text-sm">{formImageUrl}</div>
+                      <button
+                        type="button"
+                        onClick={() => setFormImageUrl("")}
+                        className="rounded-full p-1 hover:bg-destructive/10"
+                      >
+                        <X className="h-4 w-4 text-destructive" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="space-y-1 md:col-span-2">
                 <Label htmlFor="productUrl">Link do produto (opcional)</Label>
@@ -819,10 +921,12 @@ const Index = () => {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={uploadingImage}>
                 Cancelar
               </Button>
-              <Button onClick={handleSalvarItem}>{editingItem ? "Salvar alterações" : "Adicionar item"}</Button>
+              <Button onClick={handleSalvarItem} disabled={uploadingImage}>
+                {uploadingImage ? "Enviando..." : editingItem ? "Salvar alterações" : "Adicionar item"}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
