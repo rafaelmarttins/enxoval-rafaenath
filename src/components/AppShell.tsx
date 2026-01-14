@@ -61,39 +61,6 @@ export function AppSidebar() {
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    disabled
-                    className={cn(
-                      "cursor-default rounded-full px-4 py-2 text-sm text-muted-foreground/70",
-                    )}
-                  >
-                    <Home className="mr-2 h-4 w-4" />
-                    <span>Dashboard</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    disabled
-                    className={cn(
-                      "cursor-default rounded-full px-4 py-2 text-sm text-muted-foreground/70",
-                    )}
-                  >
-                    <ShoppingBag className="mr-2 h-4 w-4" />
-                    <span>Compras planejadas</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    disabled
-                    className={cn(
-                      "cursor-default rounded-full px-4 py-2 text-sm text-muted-foreground/70",
-                    )}
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Configurações</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
