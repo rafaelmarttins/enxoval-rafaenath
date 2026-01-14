@@ -121,7 +121,7 @@ const Index = () => {
   const [busca, setBusca] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
   const [filtroStatus, setFiltroStatus] = useState<string>("todos");
-  const [sortField, setSortField] = useState<SortField>("nome");
+  const [sortField, setSortField] = useState<SortField>("prioridade");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -559,31 +559,22 @@ const Index = () => {
               </div>
             </div>
             <div className="flex flex-col gap-2 md:w-64">
-              <Label>Ordenar por</Label>
-              <div className="flex gap-2">
-                <Button
-                  variant={sortField === "nome" ? "default" : "outline"}
-                  size="sm"
-                  className="flex-1 justify-between whitespace-nowrap"
-                  onClick={() => alternarOrdenacao("nome")}
-                >
-                  <span>Nome</span>
-                  <span className="text-xs text-muted-foreground">
-                    {sortField === "nome" ? (sortDirection === "asc" ? "A → Z" : "Z → A") : ""}
-                  </span>
-                </Button>
-                <Button
-                  variant={sortField === "prioridade" ? "default" : "outline"}
-                  size="sm"
-                  className="flex-1 justify-between whitespace-nowrap"
-                  onClick={() => alternarOrdenacao("prioridade")}
-                >
-                  <span>Prioridade</span>
-                  <span className="text-xs text-muted-foreground">
-                    {sortField === "prioridade" ? (sortDirection === "asc" ? "Baixa → Alta" : "Alta → Baixa") : ""}
-                  </span>
-                </Button>
-              </div>
+              <Label>Ordenar por prioridade</Label>
+              <Select
+                value={sortDirection}
+                onValueChange={(value) => {
+                  setSortField("prioridade");
+                  setSortDirection(value as SortDirection);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Alta → Baixa</SelectItem>
+                  <SelectItem value="asc">Baixa → Alta</SelectItem>
+                </SelectContent>
+              </Select>
               {temFiltrosAtivos && (
                 <Button variant="ghost" size="sm" className="self-start px-0 text-xs" onClick={limparFiltros}>
                   Limpar filtros
