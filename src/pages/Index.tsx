@@ -801,19 +801,19 @@ const Index = () => {
                       <div className="flex items-start justify-between gap-2">
                         <div className="space-y-1">
                           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                            {item.status === "Comprado" ? (
-                              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
-                                COMPRADO
-                              </span>
-                            ) : item.status === "Presenteado" ? (
-                              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                                PRESENTEADO
-                              </span>
-                            ) : (
-                              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-                                NÃO COMPRADO
-                              </span>
-                            )}
+                          {item.status === "Comprado" ? (
+                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                              COMPRADO
+                            </span>
+                          ) : item.status === "Presenteado" ? (
+                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                              PRESENTEADO
+                            </span>
+                          ) : (
+                            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
+                              NÃO COMPRADO
+                            </span>
+                          )}
                           </p>
                           <h2 className="text-sm font-semibold leading-snug">{item.nome}</h2>
                         </div>
@@ -951,10 +951,17 @@ const Index = () => {
                           <Badge
                             variant={
                               item.status === "Comprado"
-                                ? "default"
+                                ? "outline"
                                 : item.status === "Presenteado"
                                   ? "secondary"
-                                  : "outline"
+                                  : "destructive"
+                            }
+                            className={
+                              item.status === "Comprado"
+                                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                                : item.status === "Presenteado"
+                                  ? ""
+                                  : ""
                             }
                           >
                             {item.status}
