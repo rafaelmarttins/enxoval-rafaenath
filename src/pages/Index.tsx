@@ -121,6 +121,7 @@ const Index = () => {
   const [busca, setBusca] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
   const [filtroStatus, setFiltroStatus] = useState<string>("todos");
+  const [filtroPrioridade, setFiltroPrioridade] = useState<string>("todas");
   const [sortField, setSortField] = useState<SortField>("prioridade");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
@@ -189,6 +190,10 @@ const Index = () => {
 
     if (filtroStatus !== "todos") {
       resultado = resultado.filter((i) => i.status === filtroStatus);
+    }
+
+    if (filtroPrioridade !== "todas") {
+      resultado = resultado.filter((i) => i.prioridade === filtroPrioridade);
     }
 
     resultado.sort((a, b) => {
@@ -381,7 +386,8 @@ const Index = () => {
     setBusca("");
     setFiltroCategoria("todas");
     setFiltroStatus("todos");
-    setSortField("nome");
+    setFiltroPrioridade("todas");
+    setSortField("prioridade");
     setSortDirection("asc");
   }
 
@@ -444,8 +450,8 @@ const Index = () => {
     toast({ title: "CSV exportado", description: "O arquivo foi gerado com sucesso." });
   }
 
-  const temFiltrosAtivos =
-    busca.trim() || filtroCategoria !== "todas" || filtroStatus !== "todos" || sortField !== "nome" || sortDirection !== "asc";
+   const temFiltrosAtivos =
+    busca.trim() || filtroCategoria !== "todas" || filtroStatus !== "todos" || filtroPrioridade !== "todas";
 
   return (
     <div className="min-h-screen bg-background">
@@ -552,6 +558,22 @@ const Index = () => {
                     {STATUS.map((s) => (
                       <SelectItem key={s} value={s}>
                         {s}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex-1">
+                <Label>Prioridade</Label>
+                <Select value={filtroPrioridade} onValueChange={(value) => setFiltroPrioridade(value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Todas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todas">Todas</SelectItem>
+                    {PRIORIDADES.map((p) => (
+                      <SelectItem key={p} value={p}>
+                        {p}
                       </SelectItem>
                     ))}
                   </SelectContent>
