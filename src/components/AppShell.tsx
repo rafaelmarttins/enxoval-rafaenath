@@ -1,4 +1,5 @@
-import { Home, ListChecks, ShoppingBag, Settings, LogOut } from "lucide-react";
+import { Home, ListChecks, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
@@ -13,9 +14,16 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export function AppSidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  };
+
   return (
     <Sidebar collapsible="offcanvas" className="border-r bg-sidebar shadow-sm">
       <SidebarContent className="flex flex-col justify-between">
@@ -69,6 +77,7 @@ export function AppSidebar() {
         <div className="px-6 pb-6 pt-2 text-xs text-muted-foreground">
           <button
             type="button"
+            onClick={handleLogout}
             className="flex w-full items-center justify-between rounded-full px-4 py-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
           >
             <span className="flex items-center gap-2">
