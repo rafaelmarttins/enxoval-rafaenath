@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
-import { Home, Wallet } from "lucide-react";
+import { Home, Wallet, ShoppingBag } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -197,11 +197,17 @@ const Dashboard = () => {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Ainda falta comprar</CardTitle>
+            <CardHeader className="flex items-start justify-between pb-2">
+              <div>
+                <CardTitle className="text-sm font-medium">Ainda falta comprar</CardTitle>
+              </div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <ShoppingBag className="h-4 w-4" />
+              </div>
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-semibold">{formatCurrency(valorFaltante)}</p>
+              <p className="text-xs text-muted-foreground">Somente itens não comprados</p>
             </CardContent>
           </Card>
         </section>
