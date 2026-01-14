@@ -158,12 +158,12 @@ const Index = () => {
   const percentualConclusao = totalItens === 0 ? 0 : Math.round((totalItensAdquiridos / totalItens) * 100);
 
   const valorTotalEstimado = useMemo(
-    () => items.reduce((acc, i) => acc + i.quantidadeDesejada * i.valorUnitario, 0),
+    () => items.reduce((acc, i) => acc + i.valorUnitario, 0),
     [items],
   );
 
   const valorJaAdquirido = useMemo(
-    () => items.reduce((acc, i) => acc + i.quantidadeAdquirida * i.valorUnitario, 0),
+    () => items.reduce((acc, i) => (i.status === "Não comprado" ? acc : acc + i.valorUnitario), 0),
     [items],
   );
 
@@ -445,7 +445,7 @@ const Index = () => {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-semibold">{formatCurrency(valorTotalEstimado)}</p>
-              <p className="text-xs text-muted-foreground">Com base na quantidade desejada</p>
+              <p className="text-xs text-muted-foreground">Com base nos valores informados</p>
             </CardContent>
           </Card>
           <Card>
@@ -595,8 +595,7 @@ const Index = () => {
 
                     <div className="space-y-1 text-xs text-muted-foreground">
                       <p>
-                        Quantidade: <span className="font-medium">{item.quantidadeAdquirida}</span> de
-                        <span className="font-medium"> {item.quantidadeDesejada}</span>
+                        Quantidade: <span className="font-medium">{item.quantidadeDesejada}</span> unidade(s)
                       </p>
                       {item.productUrl && (
                         <a
@@ -613,7 +612,7 @@ const Index = () => {
 
                     <div className="mt-auto flex items-center justify-between pt-2">
                       <div className="space-y-0.5">
-                        <p className="text-xs text-muted-foreground">Valor unitário</p>
+                        <p className="text-xs text-muted-foreground">Valor total</p>
                         <p className="text-base font-semibold">{formatCurrency(item.valorUnitario)}</p>
                       </div>
                       <div className="flex gap-1">
@@ -752,7 +751,7 @@ const Index = () => {
                 )}
               </div>
               <div className="space-y-1">
-                <Label htmlFor="valorUnitario">Valor unitário estimado (R$)</Label>
+                <Label htmlFor="valorUnitario">Valor total (R$)</Label>
                 <Input
                   id="valorUnitario"
                   type="number"
