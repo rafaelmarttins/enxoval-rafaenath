@@ -251,7 +251,7 @@ const Index = () => {
     });
 
     return resultado;
-  }, [items, busca, filtroCategoria, filtroStatus, sortField, sortDirection]);
+  }, [items, busca, filtroCategoria, filtroStatus, filtroPrioridade, sortField, sortDirection]);
 
   function limparFormulario() {
     setEditingItem(null);
