@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X } from "lucide-react";
+import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { Button } from "@/components/ui/button";
@@ -498,8 +498,11 @@ const Index = () => {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Valor estimado</CardTitle>
+            <CardHeader className="flex items-center justify-between pb-2">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-sm font-medium">Total gasto</CardTitle>
+                <Wallet className="h-4 w-4 text-emerald-600" />
+              </div>
             </CardHeader>
             <CardContent>
               <p className="text-3xl font-semibold">{formatCurrency(valorTotalEstimado)}</p>
