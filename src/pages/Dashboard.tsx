@@ -99,11 +99,16 @@ const Dashboard = () => {
     () => items.reduce((acc, i) => acc + i.quantidadeDesejada * i.valorUnitario, 0),
     [items],
   );
+
   const valorJaGasto = useMemo(
     () => items.reduce((acc, i) => (i.status === "Comprado" ? acc + i.quantidadeAdquirida * i.valorUnitario : acc), 0),
     [items],
   );
-  const valorFaltante = Math.max(valorTotalPlanejado - valorJaGasto, 0);
+
+  const valorFaltante = useMemo(
+    () => items.reduce((acc, i) => (i.status === "Não comprado" ? acc + i.quantidadeDesejada * i.valorUnitario : acc), 0),
+    [items],
+  );
 
   const porCategoria = useMemo(() => {
     const mapa = new Map<Categoria, { categoria: Categoria; valor: number }>();
@@ -126,9 +131,8 @@ const Dashboard = () => {
       const mapa = new Map<Categoria, { categoria: Categoria; gasto: number; faltante: number }>();
 
       items.forEach((item) => {
-        const totalPlanejado = item.quantidadeDesejada * item.valorUnitario;
         const gasto = item.status === "Comprado" ? item.quantidadeAdquirida * item.valorUnitario : 0;
-        const faltante = Math.max(totalPlanejado - gasto, 0);
+        const faltante = item.status === "Não comprado" ? item.quantidadeDesejada * item.valorUnitario : 0;
 
         const atual =
           mapa.get(item.categoria) ?? ({ categoria: item.categoria, gasto: 0, faltante: 0 } as const);
