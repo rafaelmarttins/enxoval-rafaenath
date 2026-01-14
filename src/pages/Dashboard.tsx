@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { Home } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -120,6 +120,30 @@ const Dashboard = () => {
     { status: "Presenteado" as Status, valor: totalPresenteados },
     { status: "Não comprado" as Status, valor: totalNaoComprados },
   ].filter((s) => s.valor > 0);
+
+  const porCategoriaValores = useMemo(
+    () => {
+      const mapa = new Map<Categoria, { categoria: Categoria; gasto: number; faltante: number }>();
+
+      items.forEach((item) => {
+        const totalPlanejado = item.quantidadeDesejada * item.valorUnitario;
+        const gasto = item.status === "Comprado" ? item.quantidadeAdquirida * item.valorUnitario : 0;
+        const faltante = Math.max(totalPlanejado - gasto, 0);
+
+        const atual =
+          mapa.get(item.categoria) ?? ({ categoria: item.categoria, gasto: 0, faltante: 0 } as const);
+
+        mapa.set(item.categoria, {
+          categoria: item.categoria,
+          gasto: atual.gasto + gasto,
+          faltante: atual.faltante + faltante,
+        });
+      });
+
+      return Array.from(mapa.values());
+    },
+    [items],
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -288,6 +312,33 @@ const Dashboard = () => {
                     </CardContent>
                   </Card>
                 ))}
+            </div>
+          )}
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-sm font-medium">Quanto já foi gasto x quanto falta por categoria</h2>
+          {porCategoriaValores.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Cadastre itens para visualizar os valores por categoria.</p>
+          ) : (
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={porCategoriaValores}
+                  margin={{ top: 8, right: 16, left: 0, bottom: 8 }}
+                  barSize={20}
+                >
+                  <XAxis dataKey="categoria" tickLine={false} axisLine={false} fontSize={12} />
+                  <YAxis tickFormatter={(value) => formatCurrency(value).replace("R$", "R$")} fontSize={12} />
+                  <Tooltip
+                    formatter={(value: number) => formatCurrency(value)}
+                    labelFormatter={(label: string) => `Categoria: ${label}`}
+                  />
+                  <Legend />
+                  <Bar dataKey="gasto" name="Já gasto" fill="hsl(142 76% 36%)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="faltante" name="Ainda falta" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           )}
         </section>
