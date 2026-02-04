@@ -661,71 +661,69 @@ const Index = () => {
         </section>
 
         <section className="space-y-4 rounded-lg border bg-card p-4 shadow-sm">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="grid w-full gap-3 md:grid-cols-4">
-              <div className="w-full">
-                <Label htmlFor="busca">Buscar item</Label>
-                <Input
-                  id="busca"
-                  placeholder="Digite o nome do item"
-                  value={busca}
-                  onChange={(e) => setBusca(e.target.value)}
-                />
-              </div>
-               <div className="w-full">
-                <Label>Categoria</Label>
-                <Select
-                  value={filtroCategoria}
-                  onValueChange={(value) => setFiltroCategoria(value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Todas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todas">Todos os ambientes</SelectItem>
-                    {CATEGORIAS.map((categoria) => (
-                      <SelectItem key={categoria} value={categoria}>
-                        {categoria}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-               <div className="w-full">
-                <Label>Status</Label>
-                <div className="mt-2 flex min-h-10 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-background px-2 py-1">
-                  {STATUS.map((status) => (
-                    <label
-                      key={status}
-                      className="flex items-center gap-2 text-xs text-muted-foreground"
-                    >
-                      <Checkbox
-                        checked={filtroStatus.includes(status)}
-                        onCheckedChange={() => toggleStatusFiltro(status)}
-                      />
-                      <span>{status}</span>
-                    </label>
+          <div className="grid w-full gap-3 md:grid-cols-5 md:items-end">
+            <div className="w-full">
+              <Label htmlFor="busca">Buscar item</Label>
+              <Input
+                id="busca"
+                placeholder="Digite o nome do item"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+              />
+            </div>
+            <div className="w-full">
+              <Label>Categoria</Label>
+              <Select
+                value={filtroCategoria}
+                onValueChange={(value) => setFiltroCategoria(value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todos os ambientes</SelectItem>
+                  {CATEGORIAS.map((categoria) => (
+                    <SelectItem key={categoria} value={categoria}>
+                      {categoria}
+                    </SelectItem>
                   ))}
-                </div>
-              </div>
-              <div className="w-full">
-                <Label>Prioridade</Label>
-                <Select value={filtroPrioridade} onValueChange={(value) => setFiltroPrioridade(value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Todas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todas">Todas</SelectItem>
-                    {PRIORIDADES.map((p) => (
-                      <SelectItem key={p} value={p}>
-                        {p}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="w-full">
+              <Label>Status</Label>
+              <div className="mt-2 flex min-h-10 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-background px-2 py-1">
+                {STATUS.map((status) => (
+                  <label
+                    key={status}
+                    className="flex items-center gap-2 text-xs text-muted-foreground"
+                  >
+                    <Checkbox
+                      checked={filtroStatus.includes(status)}
+                      onCheckedChange={() => toggleStatusFiltro(status)}
+                    />
+                    <span>{status}</span>
+                  </label>
+                ))}
               </div>
             </div>
-            <div className="flex flex-col gap-2 md:w-64">
+            <div className="w-full">
+              <Label>Prioridade</Label>
+              <Select value={filtroPrioridade} onValueChange={(value) => setFiltroPrioridade(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todas</SelectItem>
+                  {PRIORIDADES.map((p) => (
+                    <SelectItem key={p} value={p}>
+                      {p}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="w-full">
               <Label>Ordenar por prioridade</Label>
               <Select
                 value={sortDirection}
@@ -735,7 +733,7 @@ const Index = () => {
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecione" />
+                  <SelectValue placeholder="Baixa → Alta" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="desc">Alta → Baixa</SelectItem>
