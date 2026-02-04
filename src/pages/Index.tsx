@@ -44,6 +44,7 @@ const CATEGORIAS = [
   "Sala",
   "Decoração",
   "Eletrodomésticos",
+  "Organizadores",
   "Outros",
 ] as const;
 
