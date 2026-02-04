@@ -335,13 +335,6 @@ const Index = () => {
     if (!formPrioridade) errors.prioridade = "Selecione a prioridade.";
     if (!formStatus) errors.status = "Selecione o status.";
 
-    // Regra: se status for Comprado/Presenteado, a quantidade adquirida deve ser informada (>= 1)
-    if (formStatus === "Comprado" || formStatus === "Presenteado") {
-      if (!Number.isFinite(qtdAdquiridaNum) || qtdAdquiridaNum < 1) {
-        errors.quantidadeAdquirida = "Informe a quantidade já adquirida (mínimo 1) para este status.";
-      }
-    }
-
     if (formProductUrl && !/^https?:\/\//i.test(formProductUrl.trim())) {
       errors.productUrl = "Informe um link válido começando com http:// ou https://";
     }
@@ -1168,17 +1161,11 @@ const Index = () => {
                 )}
               </div>
               <div className="space-y-1">
-                <Label htmlFor="quantidadeAdquirida">
-                  Quantidade já adquirida
-                  {(formStatus === "Comprado" || formStatus === "Presenteado") && (
-                    <span className="ml-1 text-destructive">*</span>
-                  )}
-                </Label>
+                <Label htmlFor="quantidadeAdquirida">Quantidade já adquirida</Label>
                 <Input
                   id="quantidadeAdquirida"
                   type="number"
                   min={0}
-                  required={formStatus === "Comprado" || formStatus === "Presenteado"}
                   value={formQuantidadeAdquirida}
                   onChange={(e) => setFormQuantidadeAdquirida(e.target.value)}
                 />
