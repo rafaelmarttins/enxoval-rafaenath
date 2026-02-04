@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag, Table as TableIcon, LayoutGrid } from "lucide-react";
+import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag, Table as TableIcon, LayoutGrid, CircleDashed } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { Button } from "@/components/ui/button";
@@ -125,6 +125,7 @@ const Index = () => {
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
   // Agora o filtro de status permite múltiplas seleções
   const [filtroStatus, setFiltroStatus] = useState<Status[]>([]);
+  const [filtroParcial, setFiltroParcial] = useState(false);
   const [filtroPrioridade, setFiltroPrioridade] = useState<string>("todas");
   const [sortField, setSortField] = useState<SortField>("prioridade");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -246,6 +247,10 @@ const Index = () => {
       resultado = resultado.filter((i) => filtroStatus.includes(i.status));
     }
 
+    if (filtroParcial) {
+      resultado = resultado.filter((i) => isParcial(i));
+    }
+
     if (filtroPrioridade !== "todas") {
       resultado = resultado.filter((i) => i.prioridade === filtroPrioridade);
     }
@@ -261,7 +266,7 @@ const Index = () => {
     });
 
     return resultado;
-  }, [items, busca, filtroCategoria, filtroStatus, filtroPrioridade, sortField, sortDirection]);
+  }, [items, busca, filtroCategoria, filtroStatus, filtroParcial, filtroPrioridade, sortField, sortDirection]);
 
   function limparFormulario() {
     setEditingItem(null);
@@ -551,6 +556,7 @@ const Index = () => {
     setBusca("");
     setFiltroCategoria("todas");
     setFiltroStatus([]);
+    setFiltroParcial(false);
     setFiltroPrioridade("todas");
     setSortField("prioridade");
     setSortDirection("asc");
@@ -616,7 +622,7 @@ const Index = () => {
   }
 
    const temFiltrosAtivos =
-    busca.trim() || filtroCategoria !== "todas" || filtroStatus.length > 0 || filtroPrioridade !== "todas";
+     busca.trim() || filtroCategoria !== "todas" || filtroStatus.length > 0 || filtroParcial || filtroPrioridade !== "todas";
 
   return (
     <div className="min-h-screen bg-background">
@@ -736,6 +742,16 @@ const Index = () => {
                     <span>{status}</span>
                   </label>
                 ))}
+
+                  <span className="mx-1 h-4 w-px bg-border" aria-hidden="true" />
+
+                  <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Checkbox checked={filtroParcial} onCheckedChange={(v) => setFiltroParcial(Boolean(v))} />
+                    <span className="inline-flex items-center gap-1">
+                      <CircleDashed className="h-3 w-3 text-partial" />
+                      <span className="text-partial">Parcial</span>
+                    </span>
+                  </label>
               </div>
             </div>
             <div className="w-full">
@@ -855,8 +871,12 @@ const Index = () => {
                             )}
 
                             {isParcial(item) && (
-                              <InlineBadge variant="outline" className="h-5 px-2 py-0 text-[10px] font-semibold">
-                                PARCIAL
+                              <InlineBadge
+                                variant="outline"
+                                className="h-5 gap-1 border-partial/40 bg-partial/10 px-2 py-0 text-[10px] font-semibold text-partial"
+                              >
+                                <CircleDashed className="h-3 w-3" />
+                                <span>PARCIAL</span>
                               </InlineBadge>
                             )}
                           </p>
@@ -1017,9 +1037,13 @@ const Index = () => {
                             </Badge>
 
                             {isParcial(item) && (
-                              <Badge variant="outline" className="px-2 py-0 text-[10px] font-semibold">
-                                PARCIAL
-                              </Badge>
+                              <InlineBadge
+                                variant="outline"
+                                className="gap-1 border-partial/40 bg-partial/10 px-2 py-0 text-[10px] font-semibold text-partial"
+                              >
+                                <CircleDashed className="h-3 w-3" />
+                                <span>PARCIAL</span>
+                              </InlineBadge>
                             )}
                           </div>
                         </TableCell>
