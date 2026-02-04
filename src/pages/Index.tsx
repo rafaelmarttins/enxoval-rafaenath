@@ -661,9 +661,9 @@ const Index = () => {
         </section>
 
         <section className="space-y-4 rounded-lg border bg-card p-4 shadow-sm">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div className="flex flex-1 flex-col gap-2 md:flex-row">
-              <div className="flex-1">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="grid w-full gap-3 md:grid-cols-4">
+              <div className="w-full">
                 <Label htmlFor="busca">Buscar item</Label>
                 <Input
                   id="busca"
@@ -672,7 +672,7 @@ const Index = () => {
                   onChange={(e) => setBusca(e.target.value)}
                 />
               </div>
-              <div className="flex-1">
+               <div className="w-full">
                 <Label>Categoria</Label>
                 <Select
                   value={filtroCategoria}
@@ -691,7 +691,7 @@ const Index = () => {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex-1">
+               <div className="w-full">
                 <Label>Status</Label>
                 <div className="mt-2 flex min-h-10 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-background px-2 py-1">
                   {STATUS.map((status) => (
@@ -708,7 +708,7 @@ const Index = () => {
                   ))}
                 </div>
               </div>
-              <div className="flex-1">
+              <div className="w-full">
                 <Label>Prioridade</Label>
                 <Select value={filtroPrioridade} onValueChange={(value) => setFiltroPrioridade(value)}>
                   <SelectTrigger>
