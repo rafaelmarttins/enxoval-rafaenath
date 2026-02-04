@@ -91,6 +91,18 @@ function formatCurrency(value: number) {
   });
 }
 
+function isParcial(item: Pick<EnxovalItem, "status" | "quantidadeAdquirida" | "quantidadeDesejada">) {
+  return (
+    (item.status === "Comprado" || item.status === "Presenteado") &&
+    item.quantidadeAdquirida >= 1 &&
+    item.quantidadeAdquirida < item.quantidadeDesejada
+  );
+}
+
+function quantidadeProgresso(item: Pick<EnxovalItem, "quantidadeAdquirida" | "quantidadeDesejada">) {
+  return `${item.quantidadeAdquirida}/${item.quantidadeDesejada}`;
+}
+
 const Index = () => {
   const { toast } = useToast();
 
@@ -815,20 +827,26 @@ const Index = () => {
                     <CardContent className="flex flex-1 flex-col gap-3 p-4">
                       <div className="flex items-start justify-between gap-2">
                         <div className="space-y-1">
-                          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                          {item.status === "Comprado" ? (
-                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
-                              COMPRADO
-                            </span>
-                          ) : item.status === "Presenteado" ? (
-                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                              PRESENTEADO
-                            </span>
-                          ) : (
-                            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
-                              NÃO COMPRADO
-                            </span>
-                          )}
+                          <p className="flex flex-wrap items-center gap-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                            {item.status === "Comprado" ? (
+                              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                                COMPRADO
+                              </span>
+                            ) : item.status === "Presenteado" ? (
+                              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
+                                PRESENTEADO
+                              </span>
+                            ) : (
+                              <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
+                                NÃO COMPRADO
+                              </span>
+                            )}
+
+                            {isParcial(item) && (
+                              <Badge variant="outline" className="h-5 px-2 py-0 text-[10px] font-semibold">
+                                PARCIAL
+                              </Badge>
+                            )}
                           </p>
                           <h2 className="text-sm font-semibold leading-snug">{item.nome}</h2>
                         </div>
@@ -847,6 +865,9 @@ const Index = () => {
                       </div>
 
                       <div className="space-y-1 text-xs text-muted-foreground">
+                        <p>
+                          Progresso: <span className="font-medium">{quantidadeProgresso(item)}</span>
+                        </p>
                         <p>
                           Quantidade desejada: <span className="font-medium">{item.quantidadeDesejada}</span> unidade(s)
                         </p>
@@ -936,7 +957,7 @@ const Index = () => {
                       <TableHead>Categoria</TableHead>
                       <TableHead>Prioridade</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Qtd. (desejada / adquirida)</TableHead>
+                      <TableHead>Qtd. (adquirida / desejada)</TableHead>
                       <TableHead>Loja</TableHead>
                       <TableHead>Valor total</TableHead>
                       <TableHead className="text-right">Ações</TableHead>
@@ -963,27 +984,35 @@ const Index = () => {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge
-                            variant={
-                              item.status === "Comprado"
-                                ? "outline"
-                                : item.status === "Presenteado"
-                                  ? "secondary"
-                                  : "destructive"
-                            }
-                            className={
-                              item.status === "Comprado"
-                                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                                : item.status === "Presenteado"
-                                  ? ""
-                                  : ""
-                            }
-                          >
-                            {item.status}
-                          </Badge>
+                          <div className="flex flex-wrap items-center gap-1">
+                            <Badge
+                              variant={
+                                item.status === "Comprado"
+                                  ? "outline"
+                                  : item.status === "Presenteado"
+                                    ? "secondary"
+                                    : "destructive"
+                              }
+                              className={
+                                item.status === "Comprado"
+                                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                                  : item.status === "Presenteado"
+                                    ? ""
+                                    : ""
+                              }
+                            >
+                              {item.status}
+                            </Badge>
+
+                            {isParcial(item) && (
+                              <Badge variant="outline" className="px-2 py-0 text-[10px] font-semibold">
+                                PARCIAL
+                              </Badge>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>
-                          {item.quantidadeDesejada} / {item.quantidadeAdquirida}
+                          {quantidadeProgresso(item)}
                         </TableCell>
                         <TableCell>{item.loja ?? "-"}</TableCell>
                         <TableCell>{formatCurrency(item.valorUnitario * item.quantidadeDesejada)}</TableCell>
