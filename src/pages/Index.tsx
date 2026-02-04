@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag, Table as TableIcon, LayoutGrid } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -31,7 +31,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Badge, badgeVariants } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
@@ -101,6 +101,18 @@ function isParcial(item: Pick<EnxovalItem, "status" | "quantidadeAdquirida" | "q
 
 function quantidadeProgresso(item: Pick<EnxovalItem, "quantidadeAdquirida" | "quantidadeDesejada">) {
   return `${item.quantidadeAdquirida}/${item.quantidadeDesejada}`;
+}
+
+function InlineBadge({
+  variant,
+  className,
+  children,
+}: {
+  variant?: Parameters<typeof badgeVariants>[0] extends { variant?: infer V } ? V : never;
+  className?: string;
+  children: ReactNode;
+}) {
+  return <span className={cn(badgeVariants({ variant }), className)}>{children}</span>;
 }
 
 const Index = () => {
@@ -843,9 +855,9 @@ const Index = () => {
                             )}
 
                             {isParcial(item) && (
-                              <Badge variant="outline" className="h-5 px-2 py-0 text-[10px] font-semibold">
+                              <InlineBadge variant="outline" className="h-5 px-2 py-0 text-[10px] font-semibold">
                                 PARCIAL
-                              </Badge>
+                              </InlineBadge>
                             )}
                           </p>
                           <h2 className="text-sm font-semibold leading-snug">{item.nome}</h2>
