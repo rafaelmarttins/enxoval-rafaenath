@@ -692,11 +692,11 @@ const Index = () => {
               </div>
               <div className="flex-1">
                 <Label>Status</Label>
-                <div className="mt-2 flex flex-wrap gap-2">
+                <div className="mt-2 flex min-h-10 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-background px-2 py-1">
                   {STATUS.map((status) => (
                     <label
                       key={status}
-                      className="flex items-center gap-2 rounded-md border bg-background px-2 py-1 text-xs text-muted-foreground"
+                      className="flex items-center gap-2 text-xs text-muted-foreground"
                     >
                       <Checkbox
                         checked={filtroStatus.includes(status)}
