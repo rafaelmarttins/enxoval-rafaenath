@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -97,7 +98,8 @@ const Index = () => {
   const [loadingItems, setLoadingItems] = useState(true);
   const [busca, setBusca] = useState("");
   const [filtroCategoria, setFiltroCategoria] = useState<string>("todas");
-  const [filtroStatus, setFiltroStatus] = useState<string>("todos");
+  // Agora o filtro de status permite múltiplas seleções
+  const [filtroStatus, setFiltroStatus] = useState<Status[]>([]);
   const [filtroPrioridade, setFiltroPrioridade] = useState<string>("todas");
   const [sortField, setSortField] = useState<SortField>("prioridade");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -215,8 +217,8 @@ const Index = () => {
       resultado = resultado.filter((i) => i.categoria === filtroCategoria);
     }
 
-    if (filtroStatus !== "todos") {
-      resultado = resultado.filter((i) => i.status === filtroStatus);
+    if (filtroStatus.length > 0) {
+      resultado = resultado.filter((i) => filtroStatus.includes(i.status));
     }
 
     if (filtroPrioridade !== "todas") {
@@ -507,10 +509,16 @@ const Index = () => {
     toast({ title: "Item excluído", description: `O item "${nome}" foi removido.` });
   }
 
+  function toggleStatusFiltro(status: Status) {
+    setFiltroStatus((prev) =>
+      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status],
+    );
+  }
+
   function limparFiltros() {
     setBusca("");
     setFiltroCategoria("todas");
-    setFiltroStatus("todos");
+    setFiltroStatus([]);
     setFiltroPrioridade("todas");
     setSortField("prioridade");
     setSortDirection("asc");
@@ -576,7 +584,7 @@ const Index = () => {
   }
 
    const temFiltrosAtivos =
-    busca.trim() || filtroCategoria !== "todas" || filtroStatus !== "todos" || filtroPrioridade !== "todas";
+    busca.trim() || filtroCategoria !== "todas" || filtroStatus.length > 0 || filtroPrioridade !== "todas";
 
   return (
     <div className="min-h-screen bg-background">
@@ -684,19 +692,20 @@ const Index = () => {
               </div>
               <div className="flex-1">
                 <Label>Status</Label>
-                <Select value={filtroStatus} onValueChange={(value) => setFiltroStatus(value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Todos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todos">Todos</SelectItem>
-                    {STATUS.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {s}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {STATUS.map((status) => (
+                    <label
+                      key={status}
+                      className="flex items-center gap-2 rounded-md border bg-background px-2 py-1 text-xs text-muted-foreground"
+                    >
+                      <Checkbox
+                        checked={filtroStatus.includes(status)}
+                        onCheckedChange={() => toggleStatusFiltro(status)}
+                      />
+                      <span>{status}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
               <div className="flex-1">
                 <Label>Prioridade</Label>
