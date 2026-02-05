@@ -729,11 +729,11 @@ const Index = () => {
             </div>
             <div className="w-full">
               <Label>Status</Label>
-              <div className="mt-2 grid min-h-10 w-full grid-cols-2 gap-x-4 gap-y-2 rounded-md border border-input bg-background px-2 py-2">
+              <div className="mt-2 grid min-h-10 w-full grid-flow-col grid-rows-2 gap-x-4 gap-y-2 rounded-md border border-input bg-background px-2 py-2">
                 {STATUS.map((status) => (
                   <label
                     key={status}
-                    className="flex items-center gap-2 text-xs text-muted-foreground"
+                    className="flex w-full items-center gap-2 whitespace-nowrap text-xs text-muted-foreground"
                   >
                     <Checkbox
                       checked={filtroStatus.includes(status)}
@@ -743,7 +743,7 @@ const Index = () => {
                   </label>
                 ))}
 
-                <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                <label className="flex w-full items-center gap-2 whitespace-nowrap text-xs text-muted-foreground">
                   <Checkbox checked={filtroParcial} onCheckedChange={(v) => setFiltroParcial(Boolean(v))} />
                   <span className="inline-flex items-center gap-1">
                     <CircleDashed className="h-3 w-3 text-partial" />
