@@ -837,7 +837,8 @@ const Index = () => {
                     key={item.id}
                     className={cn(
                       "flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md",
-                      item.prioridade === "Alta" && "border-amber-300 bg-amber-50/80 animate-fade-in",
+                      item.prioridade === "Alta" &&
+                        "animate-fade-in border-primary/30 bg-primary/5 dark:border-primary/40 dark:bg-primary/10",
                     )}
                   >
                     {item.imageUrl && (
@@ -855,7 +856,7 @@ const Index = () => {
                         <div className="space-y-1">
                           <p className="flex flex-wrap items-center gap-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                             {item.status === "Comprado" ? (
-                              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700">
+                              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-200">
                                 COMPRADO
                               </span>
                             ) : item.status === "Presenteado" ? (
