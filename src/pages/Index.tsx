@@ -729,25 +729,25 @@ const Index = () => {
             </div>
             <div className="w-full">
               <Label>Status</Label>
-              <div className="mt-2 grid min-h-10 w-full grid-flow-col grid-rows-2 gap-x-4 gap-y-2 rounded-md border border-input bg-background px-2 py-2">
+              <div className="mt-2 grid min-h-10 w-full grid-flow-col grid-cols-2 grid-rows-2 gap-x-3 gap-y-2 overflow-hidden rounded-md border border-input bg-background px-2 py-2">
                 {STATUS.map((status) => (
                   <label
                     key={status}
-                    className="flex w-full items-center gap-2 whitespace-nowrap text-xs text-muted-foreground"
+                    className="flex min-w-0 w-full items-center gap-2 whitespace-nowrap text-xs text-muted-foreground"
                   >
                     <Checkbox
                       checked={filtroStatus.includes(status)}
                       onCheckedChange={() => toggleStatusFiltro(status)}
                     />
-                    <span>{status}</span>
+                    <span className="min-w-0 truncate">{status}</span>
                   </label>
                 ))}
 
-                <label className="flex w-full items-center gap-2 whitespace-nowrap text-xs text-muted-foreground">
+                <label className="flex min-w-0 w-full items-center gap-2 whitespace-nowrap text-xs text-muted-foreground">
                   <Checkbox checked={filtroParcial} onCheckedChange={(v) => setFiltroParcial(Boolean(v))} />
-                  <span className="inline-flex items-center gap-1">
-                    <CircleDashed className="h-3 w-3 text-partial" />
-                    <span className="text-partial">Parcial</span>
+                  <span className="inline-flex min-w-0 items-center gap-1">
+                    <CircleDashed className="h-3 w-3 shrink-0 text-partial" />
+                    <span className="min-w-0 truncate text-partial">Parcial</span>
                   </span>
                 </label>
               </div>
