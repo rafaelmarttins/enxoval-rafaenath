@@ -1,4 +1,4 @@
-import { Home, ListChecks, LogOut } from "lucide-react";
+import { Home, ListChecks, LogOut, Moon, Sun, Laptop } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -15,6 +15,51 @@ import {
 } from "@/components/ui/sidebar";
 
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "next-themes";
+
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+
+  const current = theme ?? "system";
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2">
+          {current === "dark" ? (
+            <Moon className="h-4 w-4" />
+          ) : current === "light" ? (
+            <Sun className="h-4 w-4" />
+          ) : (
+            <Laptop className="h-4 w-4" />
+          )}
+          <span className="hidden sm:inline">Tema</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme("light")}>
+          <Sun className="mr-2 h-4 w-4" />
+          Claro
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>
+          <Moon className="mr-2 h-4 w-4" />
+          Escuro
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>
+          <Laptop className="mr-2 h-4 w-4" />
+          Sistema
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export function AppSidebar() {
   const navigate = useNavigate();
@@ -101,6 +146,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-3">
               <SidebarTrigger />
               <div className="text-sm font-medium text-muted-foreground">Painel de Casa</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
             </div>
           </header>
           <main className="flex-1 bg-background px-8 py-8">{children}</main>
