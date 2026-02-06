@@ -495,6 +495,26 @@ const Index = () => {
   }
 
   async function marcarStatus(item: EnxovalItem, novoStatus: Status) {
+    // Regra do backend: ao marcar como Comprado/Presenteado, quantidade adquirida deve ser >= 1.
+    if ((novoStatus === "Comprado" || novoStatus === "Presenteado") && item.quantidadeAdquirida < 1) {
+      toast({
+        title: "Informe a quantidade adquirida",
+        description: "Para marcar como Comprado/Presenteado, defina ao menos 1 unidade adquirida.",
+        variant: "destructive",
+      });
+
+      // Abre a edição já com status desejado e quantidade mínima válida.
+      abrirEdicao({
+        ...item,
+        status: novoStatus,
+        quantidadeAdquirida: 1,
+      });
+      return;
+    }
+
+    const statusAnterior = item.status;
+
+    // Otimista: atualiza na UI primeiro.
     setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: novoStatus } : i)));
 
     if (currentUserId) {
@@ -506,9 +526,13 @@ const Index = () => {
 
       if (error) {
         console.error("Erro ao atualizar status no backend:", error);
+
+        // Reverte UI para evitar divergência com o backend.
+        setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: statusAnterior } : i)));
+
         toast({
           title: "Erro ao atualizar status",
-          description: "A alteração foi salva apenas neste dispositivo.",
+          description: "Não foi possível salvar no backend. Tente novamente.",
           variant: "destructive",
         });
       }
