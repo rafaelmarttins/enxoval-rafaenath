@@ -364,8 +364,9 @@ const Index = () => {
     if (!formPrioridade) errors.prioridade = "Selecione a prioridade.";
     if (!formStatus) errors.status = "Selecione o status.";
 
-    // Regra: se status for Comprado/Presenteado, a quantidade adquirida deve ser informada (>= 1)
-    if (formStatus === "Comprado" || formStatus === "Presenteado") {
+    // Regra: se status for Comprado/Presenteado E a quantidade desejada for > 1,
+    // a quantidade adquirida deve ser informada (>= 1).
+    if ((formStatus === "Comprado" || formStatus === "Presenteado") && qtdDesejadaNum > 1) {
       if (!Number.isFinite(qtdAdquiridaNum) || qtdAdquiridaNum < 1) {
         errors.quantidadeAdquirida = "Informe a quantidade já adquirida (mínimo 1) para este status.";
       }
@@ -402,11 +403,20 @@ const Index = () => {
 
     setUploadingImage(false);
 
+    const quantidadeDesejadaNum = Number(formQuantidadeDesejada);
+    let quantidadeAdquiridaNum = Number(formQuantidadeAdquirida);
+
+    // Ajuste automático: se marcar como Comprado/Presenteado e a quantidade desejada for 1,
+    // não exigimos preenchimento manual — assumimos 1 adquirida para manter consistência.
+    if ((formStatus === "Comprado" || formStatus === "Presenteado") && quantidadeDesejadaNum <= 1 && quantidadeAdquiridaNum < 1) {
+      quantidadeAdquiridaNum = 1;
+    }
+
     const novoItemBase: Omit<EnxovalItem, "id"> = {
       nome: formNome.trim(),
       categoria: formCategoria as Categoria,
-      quantidadeDesejada: Number(formQuantidadeDesejada),
-      quantidadeAdquirida: Number(formQuantidadeAdquirida),
+      quantidadeDesejada: quantidadeDesejadaNum,
+      quantidadeAdquirida: quantidadeAdquiridaNum,
       valorUnitario: Number(formValorUnitario),
       prioridade: formPrioridade as Prioridade,
       status: formStatus as Status,
@@ -495,8 +505,10 @@ const Index = () => {
   }
 
   async function marcarStatus(item: EnxovalItem, novoStatus: Status) {
-    // Regra do backend: ao marcar como Comprado/Presenteado, quantidade adquirida deve ser >= 1.
-    if ((novoStatus === "Comprado" || novoStatus === "Presenteado") && item.quantidadeAdquirida < 1) {
+    const isCompradoOuPresenteado = novoStatus === "Comprado" || novoStatus === "Presenteado";
+
+    // Nova regra: só bloqueia (força edição) se Quantidade Desejada > 1.
+    if (isCompradoOuPresenteado && item.quantidadeDesejada > 1 && item.quantidadeAdquirida < 1) {
       toast({
         title: "Informe a quantidade adquirida",
         description: "Para marcar como Comprado/Presenteado, defina ao menos 1 unidade adquirida.",
@@ -512,15 +524,32 @@ const Index = () => {
       return;
     }
 
+    // Se Quantidade Desejada for 1, assumimos automaticamente 1 adquirida ao marcar Comprado/Presenteado.
+    const autoSetQuantidadeAdquirida = isCompradoOuPresenteado && item.quantidadeDesejada <= 1 && item.quantidadeAdquirida < 1;
+
     const statusAnterior = item.status;
+    const quantidadeAnterior = item.quantidadeAdquirida;
 
     // Otimista: atualiza na UI primeiro.
-    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: novoStatus } : i)));
+    setItems((prev) =>
+      prev.map((i) =>
+        i.id === item.id
+          ? {
+              ...i,
+              status: novoStatus,
+              ...(autoSetQuantidadeAdquirida ? { quantidadeAdquirida: 1 } : {}),
+            }
+          : i,
+      ),
+    );
 
     if (currentUserId) {
+      const payload: Record<string, unknown> = { status: novoStatus };
+      if (autoSetQuantidadeAdquirida) payload.quantidade_adquirida = 1;
+
       const { error } = await supabase
         .from("enxoval_items")
-        .update({ status: novoStatus })
+        .update(payload)
         .eq("id", item.id)
         .eq("user_id", currentUserId);
 
@@ -528,7 +557,13 @@ const Index = () => {
         console.error("Erro ao atualizar status no backend:", error);
 
         // Reverte UI para evitar divergência com o backend.
-        setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, status: statusAnterior } : i)));
+        setItems((prev) =>
+          prev.map((i) =>
+            i.id === item.id
+              ? { ...i, status: statusAnterior, quantidadeAdquirida: quantidadeAnterior }
+              : i,
+          ),
+        );
 
         toast({
           title: "Erro ao atualizar status",
