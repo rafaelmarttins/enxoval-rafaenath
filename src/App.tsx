@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
+import ListaPresentes from "./pages/ListaPresentes";
 import { AppShell } from "./components/AppShell";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,11 @@ const App = () => {
                     </RequireAuth>
                   }
                 />
+
+                {/* Pública (sem login) */}
+                <Route path="/lista-presentes" element={<Navigate to="/lista-presentes/enxoval" replace />} />
+                <Route path="/lista-presentes/:slug" element={<ListaPresentes />} />
+
                 <Route
                   path="/itens"
                   element={
@@ -72,10 +78,7 @@ const App = () => {
                     </RequireAuth>
                   }
                 />
-                <Route
-                  path="/auth"
-                  element={user ? <Navigate to="/" replace /> : <Auth />}
-                />
+                <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Auth />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
