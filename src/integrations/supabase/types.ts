@@ -23,6 +23,7 @@ export type Database = {
           loja: string | null
           nome: string
           observacoes: string | null
+          presenteado_por: string | null
           prioridade: string
           product_url: string | null
           quantidade_adquirida: number
@@ -40,6 +41,7 @@ export type Database = {
           loja?: string | null
           nome: string
           observacoes?: string | null
+          presenteado_por?: string | null
           prioridade: string
           product_url?: string | null
           quantidade_adquirida?: number
@@ -57,6 +59,7 @@ export type Database = {
           loja?: string | null
           nome?: string
           observacoes?: string | null
+          presenteado_por?: string | null
           prioridade?: string
           product_url?: string | null
           quantidade_adquirida?: number
@@ -94,7 +97,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      reserve_enxoval_item: {
+        Args: { p_item_id: string; p_nome: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
