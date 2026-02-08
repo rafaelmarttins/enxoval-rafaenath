@@ -50,40 +50,43 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <AppShell>
-            {loading ? (
-              <div className="flex h-full items-center justify-center">
-                <span className="text-sm text-muted-foreground">Carregando...</span>
-              </div>
-            ) : (
-              <Routes>
-                <Route
-                  path="/"
-                  element={
+          {loading ? (
+            <div className="flex min-h-screen items-center justify-center bg-background">
+              <span className="text-sm text-muted-foreground">Carregando...</span>
+            </div>
+          ) : (
+            <Routes>
+              {/* Pública (sem sidebar / sem login) */}
+              <Route path="/lista-presentes" element={<Navigate to="/lista-presentes/enxoval" replace />} />
+              <Route path="/lista-presentes/:slug" element={<ListaPresentes />} />
+
+              {/* Rotas protegidas (com AppShell) */}
+              <Route
+                path="/"
+                element={
+                  <AppShell>
                     <RequireAuth user={user}>
                       <Dashboard />
                     </RequireAuth>
-                  }
-                />
-
-                {/* Pública (sem login) */}
-                <Route path="/lista-presentes" element={<Navigate to="/lista-presentes/enxoval" replace />} />
-                <Route path="/lista-presentes/:slug" element={<ListaPresentes />} />
-
-                <Route
-                  path="/itens"
-                  element={
+                  </AppShell>
+                }
+              />
+              <Route
+                path="/itens"
+                element={
+                  <AppShell>
                     <RequireAuth user={user}>
                       <Index />
                     </RequireAuth>
-                  }
-                />
-                <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Auth />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            )}
-          </AppShell>
+                  </AppShell>
+                }
+              />
+
+              <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Auth />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          )}
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Heart } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
 
@@ -199,7 +200,10 @@ export default function ListaPresentes() {
         <header className="space-y-2">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="space-y-1">
-              <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Lista de presentes</h1>
+              <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                <Heart className="h-6 w-6 text-primary" />
+                <span>Lista de Presentes Rafa e Nath</span>
+              </h1>
               <p className="text-sm text-muted-foreground">
                 Escolha um item do nosso enxoval para presentear. {slug ? `(${slug})` : ""}
               </p>
