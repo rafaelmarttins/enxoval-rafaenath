@@ -1,4 +1,4 @@
-import { Home, ListChecks, LogOut, Moon, Sun, Laptop } from "lucide-react";
+import { Home, ListChecks, LogOut, Moon, Sun, Laptop, BookmarkCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -111,6 +111,18 @@ export function AppSidebar() {
                     >
                       <ListChecks className="h-4 w-4" />
                       <span>Itens do enxoval</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to="/reservados"
+                      className="flex items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+                      activeClassName="bg-primary/10 text-primary shadow-sm border border-primary/40"
+                    >
+                      <BookmarkCheck className="h-4 w-4" />
+                      <span>Lista Reservados</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

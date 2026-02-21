@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Auth from "./pages/Auth";
 import ListaPresentes from "./pages/ListaPresentes";
+import Reservados from "./pages/Reservados";
 import { AppShell } from "./components/AppShell";
 
 const queryClient = new QueryClient();
@@ -77,6 +78,16 @@ const App = () => {
                   <AppShell>
                     <RequireAuth user={user}>
                       <Index />
+                    </RequireAuth>
+                  </AppShell>
+                }
+              />
+              <Route
+                path="/reservados"
+                element={
+                  <AppShell>
+                    <RequireAuth user={user}>
+                      <Reservados />
                     </RequireAuth>
                   </AppShell>
                 }
