@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag, Table as TableIcon, LayoutGrid, CircleDashed } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -71,6 +70,7 @@ type EnxovalItem = {
   observacoes?: string;
   imageUrl?: string;
   productUrl?: string;
+  presenteadoPor?: string;
 };
 
 type SortField = "nome" | "prioridade";
@@ -149,6 +149,7 @@ const Index = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [itemParaExcluir, setItemParaExcluir] = useState<EnxovalItem | null>(null);
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
+  const [unreserveLoadingId, setUnreserveLoadingId] = useState<string | null>(null);
 
   useEffect(() => {
     const carregarItens = async () => {
@@ -196,6 +197,7 @@ const Index = () => {
         observacoes: row.observacoes ?? undefined,
         imageUrl: row.image_url ?? undefined,
         productUrl: row.product_url ?? undefined,
+        presenteadoPor: row.presenteado_por ?? undefined,
       }));
 
       setItems(mapeados);
@@ -206,6 +208,14 @@ const Index = () => {
   }, []);
 
   const totalItens = items.length;
+
+  const itensReservados = useMemo(
+    () => items.filter((i) => Boolean(i.presenteadoPor)),
+    [items],
+  );
+
+  const totalItensReservados = itensReservados.length;
+
   const totalItensAdquiridos = useMemo(
     () => items.filter((i) => i.status === "Comprado" || i.status === "Presenteado").length,
     [items],
@@ -574,6 +584,46 @@ const Index = () => {
     }
   }
 
+  async function desreservarItem(item: EnxovalItem) {
+    if (!currentUserId) return;
+
+    const reservadoPorAnterior = item.presenteadoPor;
+    if (!reservadoPorAnterior) return;
+
+    setUnreserveLoadingId(item.id);
+
+    // Otimista: limpa na UI primeiro
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, presenteadoPor: undefined } : i)));
+
+    const { error } = await supabase
+      .from("enxoval_items")
+      .update({ presenteado_por: null })
+      .eq("id", item.id)
+      .eq("user_id", currentUserId);
+
+    if (error) {
+      console.error("Erro ao desreservar item:", error);
+
+      // Reverte
+      setItems((prev) =>
+        prev.map((i) => (i.id === item.id ? { ...i, presenteadoPor: reservadoPorAnterior } : i)),
+      );
+
+      toast({
+        title: "Não foi possível desreservar",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Reserva removida",
+        description: `O item "${item.nome}" voltou a ficar disponível na lista pública.`,
+      });
+    }
+
+    setUnreserveLoadingId(null);
+  }
+
   function confirmarExclusao(item: EnxovalItem) {
     setItemParaExcluir(item);
   }
@@ -755,6 +805,55 @@ const Index = () => {
             </CardContent>
           </Card>
         </section>
+
+        {totalItensReservados > 0 ? (
+          <section className="rounded-lg border bg-card p-4 shadow-sm">
+            <div className="flex flex-wrap items-end justify-between gap-2">
+              <div className="space-y-1">
+                <h2 className="text-base font-semibold tracking-tight">Reservas na lista pública</h2>
+                <p className="text-sm text-muted-foreground">
+                  {totalItensReservados} {totalItensReservados === 1 ? "item reservado" : "itens reservados"}.
+                </p>
+              </div>
+              <Badge variant="secondary">Somente admin vê</Badge>
+            </div>
+
+            <div className="mt-4 overflow-hidden rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Item</TableHead>
+                    <TableHead>Reservado por</TableHead>
+                    <TableHead className="text-right">Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {itensReservados.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-medium">{item.nome}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{item.presenteadoPor}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex justify-end">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            disabled={unreserveLoadingId === item.id}
+                            onClick={() => desreservarItem(item)}
+                          >
+                            {unreserveLoadingId === item.id ? "Desreservando..." : "Desreservar"}
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </section>
+        ) : null}
 
         <section className="space-y-4 rounded-lg border bg-card p-4 shadow-sm">
           <div className="grid w-full gap-3 md:grid-cols-5 md:items-end">
