@@ -53,6 +53,9 @@ const STATUS = ["Não comprado", "Comprado", "Presenteado"] as const;
 
 const LOJAS_PRE_DEFINIDAS = ["Mercado Livre", "Shopee", "Amazon"] as const;
 
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+
 type Categoria = (typeof CATEGORIAS)[number];
 type Prioridade = (typeof PRIORIDADES)[number];
 type Status = (typeof STATUS)[number];
@@ -285,20 +288,35 @@ const Index = () => {
   }
 
   async function uploadImageFile(file: File): Promise<string | null> {
+    // First line of defense (client-side)
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
+      toast({
+        title: "Formato não permitido",
+        description: "Envie uma imagem JPG, PNG, WEBP ou GIF.",
+        variant: "destructive",
+      });
+      return null;
+    }
+
+    if (file.size <= 0 || file.size > MAX_IMAGE_SIZE_BYTES) {
+      toast({
+        title: "Arquivo muito grande",
+        description: "A imagem deve ter no máximo 5MB.",
+        variant: "destructive",
+      });
+      return null;
+    }
+
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${crypto.randomUUID()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const formData = new FormData();
+      formData.append("file", file);
 
-      const { error: uploadError } = await supabase.storage
-        .from("enxoval-images")
-        .upload(filePath, file, {
-          cacheControl: "3600",
-          upsert: false,
-        });
+      const { data, error } = await supabase.functions.invoke("upload-enxoval-image", {
+        body: formData,
+      });
 
-      if (uploadError) {
-        console.error("Upload error:", uploadError);
+      if (error) {
+        console.error("Upload function error:", error);
         toast({
           title: "Erro no upload",
           description: "Não foi possível enviar a imagem.",
@@ -307,10 +325,24 @@ const Index = () => {
         return null;
       }
 
-      const { data } = supabase.storage.from("enxoval-images").getPublicUrl(filePath);
-      return data.publicUrl;
+      const publicUrl = (data as { publicUrl?: string } | null)?.publicUrl;
+      if (!publicUrl) {
+        toast({
+          title: "Erro no upload",
+          description: "Não foi possível obter o link da imagem.",
+          variant: "destructive",
+        });
+        return null;
+      }
+
+      return publicUrl;
     } catch (error) {
       console.error("Unexpected upload error:", error);
+      toast({
+        title: "Erro no upload",
+        description: "Tente novamente.",
+        variant: "destructive",
+      });
       return null;
     }
   }
