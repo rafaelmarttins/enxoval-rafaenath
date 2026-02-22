@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Home, ListChecks, LogOut, Moon, Sun, Laptop, BookmarkCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
@@ -69,12 +70,17 @@ export function AppSidebar() {
     navigate("/auth");
   };
 
+  const navItemBase =
+    "flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring";
+  const navItemActive =
+    "bg-sidebar-accent text-sidebar-foreground ring-1 ring-sidebar-border shadow-sm";
+
   return (
     <Sidebar collapsible="offcanvas" className="border-r bg-sidebar shadow-sm">
       <SidebarContent className="flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-3 px-6 py-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-semibold shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-semibold shadow-sm">
               E
             </div>
             <div className="space-y-0.5">
@@ -83,44 +89,33 @@ export function AppSidebar() {
             </div>
           </div>
 
-          <SidebarGroup className="mt-2">
-            <SidebarGroupLabel className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <SidebarGroup className="mt-1">
+            <SidebarGroupLabel className="px-6 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Navegação
             </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
+            <SidebarGroupContent className="px-4">
+              <SidebarMenu className="gap-1.5">
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <NavLink
-                      to="/"
-                      end
-                      className="flex items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
-                      activeClassName="bg-primary/10 text-primary shadow-sm border border-primary/40"
-                    >
+                    <NavLink to="/" end className={navItemBase} activeClassName={navItemActive}>
                       <Home className="h-4 w-4" />
                       <span>Dashboard</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <NavLink
-                      to="/itens"
-                      className="flex items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
-                      activeClassName="bg-primary/10 text-primary shadow-sm border border-primary/40"
-                    >
+                    <NavLink to="/itens" className={navItemBase} activeClassName={navItemActive}>
                       <ListChecks className="h-4 w-4" />
                       <span>Itens do enxoval</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <NavLink
-                      to="/reservados"
-                      className="flex items-center gap-2 rounded-full px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
-                      activeClassName="bg-primary/10 text-primary shadow-sm border border-primary/40"
-                    >
+                    <NavLink to="/reservados" className={navItemBase} activeClassName={navItemActive}>
                       <BookmarkCheck className="h-4 w-4" />
                       <span>Lista Reservados</span>
                     </NavLink>
@@ -135,10 +130,10 @@ export function AppSidebar() {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex w-full items-center justify-between rounded-full px-4 py-2 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+            className="flex w-full items-center justify-between rounded-lg px-4 py-2.5 text-xs font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
           >
             <span className="flex items-center gap-2">
-              <LogOut className="h-3.5 w-3.5" />
+              <LogOut className="h-4 w-4" />
               <span>Sair</span>
             </span>
           </button>
@@ -150,7 +145,14 @@ export function AppSidebar() {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "19rem",
+          "--sidebar-width-icon": "3.5rem",
+        } as CSSProperties
+      }
+    >
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex min-h-screen flex-1 flex-col bg-background">
