@@ -71,7 +71,7 @@ export function AppSidebar() {
   };
 
   const navItemBase =
-    "flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring";
+    "flex items-center gap-3 rounded-lg px-4 py-3 text-base font-semibold text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring";
   const navItemActive =
     "bg-sidebar-accent text-sidebar-foreground ring-1 ring-sidebar-border shadow-sm";
 
@@ -80,25 +80,25 @@ export function AppSidebar() {
       <SidebarContent className="flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-3 px-6 py-6">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-semibold shadow-sm">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground text-xl font-semibold shadow-sm">
               E
             </div>
             <div className="space-y-0.5">
-              <p className="text-xs font-medium text-muted-foreground">Enxoval</p>
-              <p className="text-sm font-semibold tracking-tight">Painel de Casa</p>
+              <p className="text-sm font-medium text-muted-foreground">Enxoval</p>
+              <p className="text-base font-semibold tracking-tight">Painel de Casa</p>
             </div>
           </div>
 
           <SidebarGroup className="mt-1">
-            <SidebarGroupLabel className="px-6 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            <SidebarGroupLabel className="px-6 text-sm font-medium uppercase tracking-wide text-muted-foreground">
               Navegação
             </SidebarGroupLabel>
             <SidebarGroupContent className="px-4">
-              <SidebarMenu className="gap-1.5">
+              <SidebarMenu className="gap-2">
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <NavLink to="/" end className={navItemBase} activeClassName={navItemActive}>
-                      <Home className="h-4 w-4" />
+                      <Home className="h-5 w-5" />
                       <span>Dashboard</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -107,7 +107,7 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <NavLink to="/itens" className={navItemBase} activeClassName={navItemActive}>
-                      <ListChecks className="h-4 w-4" />
+                      <ListChecks className="h-5 w-5" />
                       <span>Itens do enxoval</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -116,7 +116,7 @@ export function AppSidebar() {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <NavLink to="/reservados" className={navItemBase} activeClassName={navItemActive}>
-                      <BookmarkCheck className="h-4 w-4" />
+                      <BookmarkCheck className="h-5 w-5" />
                       <span>Lista Reservados</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -130,10 +130,10 @@ export function AppSidebar() {
           <button
             type="button"
             onClick={handleLogout}
-            className="flex w-full items-center justify-between rounded-lg px-4 py-2.5 text-xs font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+            className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm font-semibold text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
           >
             <span className="flex items-center gap-2">
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-5 w-5" />
               <span>Sair</span>
             </span>
           </button>
