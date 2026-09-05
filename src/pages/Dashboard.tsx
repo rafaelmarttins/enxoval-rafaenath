@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
-import { Home, Wallet, ShoppingBag } from "lucide-react";
+import { ArrowRight, CheckCircle2, CircleDollarSign, Package, ShoppingBag } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -206,69 +207,54 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-6">
-      <header className="flex items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Home className="h-6 w-6 text-primary" />
-              <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Dashboard do enxoval</h1>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Visão geral do progresso do enxoval, itens e valores por categoria.
-            </p>
-          </div>
-        </header>
+    <div className="mx-auto flex max-w-7xl flex-col gap-7">
+      <header className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="mb-1 text-sm font-semibold text-primary">Visão geral</p>
+          <h1 className="font-serif text-3xl font-semibold md:text-4xl">Como está o nosso enxoval?</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Acompanhe o que já conquistamos e planeje as próximas compras.</p>
+        </div>
+        <Link to="/itens" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+          Ver meu enxoval <ArrowRight className="h-4 w-4" />
+        </Link>
+      </header>
 
-        <section className="grid gap-4 md:grid-cols-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Itens cadastrados</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-semibold">{totalItens}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Concluídos</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-semibold">{totalComprados + totalPresenteados}</p>
-              <p className="text-xs text-muted-foreground">{percentualConclusao}% do enxoval concluído</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex items-start justify-between pb-2">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <Card className="border-primary bg-primary text-primary-foreground md:col-span-2">
+            <CardContent className="flex h-full flex-col justify-between gap-6 p-6">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-primary-foreground/70">Progresso total</p>
+                  <p className="mt-2 font-serif text-5xl font-semibold">{percentualConclusao}%</p>
+                </div>
+                <CheckCircle2 className="h-7 w-7 text-primary-foreground/70" />
+              </div>
               <div>
-                <CardTitle className="text-sm font-medium">Total gasto</CardTitle>
+                <div className="h-2 overflow-hidden rounded-full bg-primary-foreground/20">
+                  <div className="h-full rounded-full bg-primary-foreground transition-all" style={{ width: `${percentualConclusao}%` }} />
+                </div>
+                <p className="mt-3 text-sm text-primary-foreground/70">{totalComprados + totalPresenteados} de {totalItens} itens concluídos</p>
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-success/10 text-success">
-                <Wallet className="h-4 w-4" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-semibold">{formatCurrency(valorTotalEnxoval)}</p>
-              <p className="text-xs text-muted-foreground">Considerando o que já foi comprado</p>
             </CardContent>
           </Card>
           <Card>
-            <CardHeader className="flex items-start justify-between pb-2">
-              <div>
-                <CardTitle className="text-sm font-medium">Ainda falta comprar</CardTitle>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <ShoppingBag className="h-4 w-4" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-semibold">{formatCurrency(valorFaltante)}</p>
-              <p className="text-xs text-muted-foreground">Somente itens não comprados</p>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between"><p className="text-sm font-semibold text-muted-foreground">Itens cadastrados</p><Package className="h-5 w-5 text-primary" /></div>
+              <p className="mt-4 font-serif text-3xl font-semibold">{totalItens}</p>
+              <p className="mt-1 text-xs text-muted-foreground">Em todas as categorias</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between"><p className="text-sm font-semibold text-muted-foreground">Total investido</p><CircleDollarSign className="h-5 w-5 text-success" /></div>
+              <p className="mt-4 font-serif text-3xl font-semibold">{formatCurrency(valorTotalEnxoval)}</p>
+              <p className="mt-1 text-xs text-muted-foreground">Faltam {formatCurrency(valorFaltante)}</p>
             </CardContent>
           </Card>
         </section>
 
         <section className="grid gap-4 md:grid-cols-2">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Progresso por status</CardTitle>
             </CardHeader>
@@ -314,7 +300,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Valor estimado por categoria</CardTitle>
             </CardHeader>
@@ -354,8 +340,8 @@ const Dashboard = () => {
           </Card>
         </section>
 
-        <section className="space-y-3">
-          <h2 className="text-sm font-medium">Itens de alta prioridade pendentes</h2>
+        <section className="space-y-4">
+          <div className="flex items-center justify-between"><div><h2 className="font-serif text-xl font-semibold">Próximas compras</h2><p className="text-sm text-muted-foreground">Itens de alta prioridade que ainda precisam de atenção.</p></div><ShoppingBag className="h-5 w-5 text-primary" /></div>
           {items.filter((i) => i.prioridade === "Alta" && i.status === "Não comprado").length === 0 ? (
             <p className="text-sm text-muted-foreground">Nenhum item de alta prioridade pendente no momento.</p>
           ) : (
@@ -363,11 +349,11 @@ const Dashboard = () => {
               {items
                 .filter((i) => i.prioridade === "Alta" && i.status === "Não comprado")
                 .map((item) => (
-                  <Card key={item.id} className="border-warning/30 bg-warning/10">
+                  <Card key={item.id} className="border-border bg-card shadow-sm transition-shadow hover:shadow-md">
                     <CardContent className="flex items-center justify-between gap-3 p-3">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <Badge variant="destructive" className="bg-warning text-warning-foreground hover:bg-warning">
+                          <Badge variant="outline" className="border-warning/40 bg-warning/10 text-warning">
                             Alta prioridade
                           </Badge>
                           <span className="text-xs text-muted-foreground">{item.categoria}</span>

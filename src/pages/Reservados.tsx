@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Heart } from "lucide-react";
+import { BookmarkCheck, Gift, UserRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -138,30 +138,30 @@ export default function Reservados() {
   }
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-7">
       <header className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <Heart className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Lista Reservados</h1>
+             <BookmarkCheck className="h-7 w-7 text-primary" />
+             <h1 className="font-serif text-3xl font-semibold md:text-4xl">Lista de Reservados</h1>
           </div>
           <p className="text-sm text-muted-foreground">Itens que convidados já reservaram na lista pública.</p>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <Card>
+         <section className="grid gap-4 md:grid-cols-3">
+           <Card className="border-primary bg-primary text-primary-foreground">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Itens reservados</CardTitle>
+               <CardTitle className="text-sm font-semibold text-primary-foreground/70">Itens reservados</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-semibold">{total}</p>
+               <div className="flex items-center justify-between"><p className="font-serif text-4xl font-semibold">{total}</p><Gift className="h-6 w-6 text-primary-foreground/60" /></div>
             </CardContent>
           </Card>
         </section>
 
         {loading ? (
-          <div className="py-10 text-center text-sm text-muted-foreground">Carregando reservas...</div>
+           <div className="rounded-md border bg-card py-16 text-center text-sm text-muted-foreground">Carregando reservas...</div>
         ) : total === 0 ? (
-          <div className="py-10 text-center text-sm text-muted-foreground">Nenhum item reservado no momento.</div>
+           <div className="rounded-md border bg-card px-6 py-16 text-center"><UserRound className="mx-auto mb-4 h-8 w-8 text-primary" /><h2 className="font-serif text-xl font-semibold">Nenhuma reserva ainda</h2><p className="mt-2 text-sm text-muted-foreground">Quando alguém escolher um presente, ele aparecerá aqui.</p></div>
         ) : (
           <section className="space-y-6">
             {agrupadosPorCategoria.map(([categoria, itemsCategoria]) => (
