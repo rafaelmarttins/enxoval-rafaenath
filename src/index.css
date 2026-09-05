@@ -8,33 +8,33 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 40 60% 96%;
-    --foreground: 30 30% 18%;
+    --background: 216 33% 97%;
+    --foreground: 220 32% 10%;
 
-    --card: 40 60% 98%;
-    --card-foreground: 30 30% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 32% 10%;
 
-    --popover: 40 60% 98%;
-    --popover-foreground: 30 30% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 32% 10%;
 
-    --primary: 37 90% 55%;
-    --primary-foreground: 40 60% 98%;
+    --primary: 216 72% 30%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 40 60% 94%;
-    --secondary-foreground: 30 30% 18%;
+    --secondary: 214 34% 94%;
+    --secondary-foreground: 218 43% 18%;
 
-    --muted: 40 40% 92%;
-    --muted-foreground: 30 15% 42%;
+    --muted: 216 24% 94%;
+    --muted-foreground: 217 12% 43%;
 
-    --accent: 40 70% 92%;
-    --accent-foreground: 30 30% 18%;
+    --accent: 214 48% 92%;
+    --accent-foreground: 216 72% 25%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 35% 88%;
-    --input: 40 35% 88%;
-    --ring: 37 90% 55%;
+    --border: 216 22% 88%;
+    --input: 216 22% 86%;
+    --ring: 216 72% 30%;
 
     /* Status auxiliar (UI) */
     --partial: 270 85% 55%;
@@ -43,51 +43,51 @@ All colors MUST be HSL.
     --success: 142 71% 35%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 32 95% 48%;
+    --warning: 39 88% 47%;
     --warning-foreground: 0 0% 100%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    --sidebar-background: 40 60% 94%;
-    --sidebar-foreground: 30 30% 18%;
-    --sidebar-primary: 37 90% 55%;
-    --sidebar-primary-foreground: 40 60% 98%;
-    --sidebar-accent: 40 60% 96%;
-    --sidebar-accent-foreground: 30 30% 18%;
-    --sidebar-border: 40 35% 88%;
-    --sidebar-ring: 37 90% 55%;
+    --sidebar-background: 222 45% 12%;
+    --sidebar-foreground: 214 32% 91%;
+    --sidebar-primary: 210 100% 68%;
+    --sidebar-primary-foreground: 222 50% 10%;
+    --sidebar-accent: 218 46% 20%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 218 35% 23%;
+    --sidebar-ring: 210 100% 68%;
   }
 
   .dark {
     /* Dark theme (alto contraste + neutro elegante) */
-    --background: 30 18% 7%;
-    --foreground: 40 25% 96%;
+    --background: 222 35% 7%;
+    --foreground: 214 30% 96%;
 
-    --card: 30 16% 10%;
-    --card-foreground: 40 25% 96%;
+    --card: 222 30% 10%;
+    --card-foreground: 214 30% 96%;
 
-    --popover: 30 16% 10%;
-    --popover-foreground: 40 25% 96%;
+    --popover: 222 30% 10%;
+    --popover-foreground: 214 30% 96%;
 
     /* Mantém o dourado do app também no dark */
-    --primary: 37 90% 55%;
-    --primary-foreground: 30 18% 10%;
+    --primary: 210 100% 68%;
+    --primary-foreground: 222 50% 10%;
 
-    --secondary: 30 14% 14%;
-    --secondary-foreground: 40 25% 96%;
+    --secondary: 220 24% 16%;
+    --secondary-foreground: 214 30% 96%;
 
-    --muted: 30 12% 16%;
-    --muted-foreground: 40 10% 72%;
+    --muted: 220 20% 16%;
+    --muted-foreground: 215 15% 68%;
 
-    --accent: 30 14% 18%;
-    --accent-foreground: 40 25% 96%;
+    --accent: 218 38% 20%;
+    --accent-foreground: 214 30% 96%;
 
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 10% 20%;
-    --input: 30 10% 20%;
-    --ring: 37 90% 55%;
+    --border: 218 20% 21%;
+    --input: 218 20% 23%;
+    --ring: 210 100% 68%;
 
     /* Status auxiliar (UI) */
     --partial: 270 90% 72%;
@@ -100,14 +100,14 @@ All colors MUST be HSL.
     --warning-foreground: 30 30% 10%;
 
     /* Sidebar */
-    --sidebar-background: 30 16% 9%;
-    --sidebar-foreground: 40 25% 96%;
-    --sidebar-primary: 37 90% 55%;
-    --sidebar-primary-foreground: 30 18% 10%;
-    --sidebar-accent: 30 14% 14%;
-    --sidebar-accent-foreground: 40 25% 96%;
-    --sidebar-border: 30 10% 18%;
-    --sidebar-ring: 37 90% 55%;
+    --sidebar-background: 222 45% 8%;
+    --sidebar-foreground: 214 30% 94%;
+    --sidebar-primary: 210 100% 68%;
+    --sidebar-primary-foreground: 222 50% 10%;
+    --sidebar-accent: 218 38% 17%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 218 28% 19%;
+    --sidebar-ring: 210 100% 68%;
   }
 }
 
@@ -118,8 +118,10 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(circle at top right, hsl(var(--primary) / 0.08), transparent 45%),
-      radial-gradient(circle at bottom left, hsl(var(--partial) / 0.06), transparent 40%);
-    background-attachment: fixed;
+    min-width: 320px;
+    font-family: "Nunito Sans", system-ui, sans-serif;
+    letter-spacing: 0;
   }
+
+  h1, h2, h3, .font-display { font-family: "Lora", Georgia, serif; letter-spacing: 0; }
 }
