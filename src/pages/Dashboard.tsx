@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
-import { ArrowRight, CheckCircle2, CircleDollarSign, Package, ShoppingBag } from "lucide-react";
+import { ArrowRight, CheckCircle2, CircleDollarSign, Copy, ExternalLink, Gift, Package, ShoppingBag, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+
 
 const STORAGE_KEY = "enxoval_casamento_itens_v1";
 
