@@ -40,7 +40,13 @@ All colors MUST be HSL.
     --partial: 270 85% 55%;
     --partial-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    --success: 142 71% 35%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 32 95% 48%;
+    --warning-foreground: 0 0% 100%;
+
+    --radius: 0.75rem;
 
     --sidebar-background: 40 60% 94%;
     --sidebar-foreground: 30 30% 18%;
@@ -87,6 +93,12 @@ All colors MUST be HSL.
     --partial: 270 90% 72%;
     --partial-foreground: 270 25% 12%;
 
+    --success: 142 65% 45%;
+    --success-foreground: 142 30% 8%;
+
+    --warning: 37 90% 58%;
+    --warning-foreground: 30 30% 10%;
+
     /* Sidebar */
     --sidebar-background: 30 16% 9%;
     --sidebar-foreground: 40 25% 96%;
@@ -106,5 +118,8 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background-image: radial-gradient(circle at top right, hsl(var(--primary) / 0.08), transparent 45%),
+      radial-gradient(circle at bottom left, hsl(var(--partial) / 0.06), transparent 40%);
+    background-attachment: fixed;
   }
 }

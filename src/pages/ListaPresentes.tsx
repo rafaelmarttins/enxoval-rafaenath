@@ -199,14 +199,18 @@ export default function ListaPresentes() {
       <main className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6">
         <header className="space-y-2">
           <div className="flex flex-wrap items-end justify-between gap-3">
-            <div className="space-y-1">
-              <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-                <Heart className="h-6 w-6 text-primary" />
-                <span>Lista de Presentes Rafa e Nath</span>
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Escolha um item do nosso enxoval para presentear. {slug ? `(${slug})` : ""}
-              </p>
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-sm">
+                <Heart className="h-5 w-5 fill-current" />
+              </div>
+              <div className="space-y-1">
+                <h1 className="font-serif text-2xl font-semibold tracking-tight sm:text-3xl">
+                  Lista de Presentes · Rafa &amp; Nath
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Escolha um item do nosso enxoval para presentear. {slug ? `(${slug})` : ""}
+                </p>
+              </div>
             </div>
             <Badge variant="secondary" className="text-sm">
               {disponiveisCount} itens disponíveis para presente
