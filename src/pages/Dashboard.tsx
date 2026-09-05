@@ -84,6 +84,18 @@ function loadItems(): EnxovalItem[] {
 
 const Dashboard = () => {
   const [items, setItems] = useState<EnxovalItem[]>([]);
+  const { toast } = useToast();
+
+  const linkListaPresentes = `${typeof window !== "undefined" ? window.location.origin : ""}/lista-presentes/enxoval`;
+
+  const copiarLink = async () => {
+    try {
+      await navigator.clipboard.writeText(linkListaPresentes);
+      toast({ title: "Link copiado!", description: "Envie para familiares e amigos escolherem os presentes." });
+    } catch {
+      toast({ title: "Não foi possível copiar", description: linkListaPresentes, variant: "destructive" });
+    }
+  };
 
   const carregarItens = async () => {
     const { data: authData } = await supabase.auth.getUser();
@@ -114,7 +126,9 @@ const Dashboard = () => {
       valorUnitario: Number(row.valor_unitario) || 0,
       prioridade: row.prioridade as Prioridade,
       status: row.status as Status,
+      presenteadoPor: row.presenteado_por ?? null,
     }));
+
 
     setItems(mapeados);
   };
