@@ -245,12 +245,10 @@ const Index = () => {
       resultado = resultado.filter((i) => i.categoria === filtroCategoria);
     }
 
-    if (filtroStatus.length > 0) {
-      resultado = resultado.filter((i) => filtroStatus.includes(i.status));
-    }
-
-    if (filtroParcial) {
-      resultado = resultado.filter((i) => isParcial(i));
+    if (filtroStatus.length > 0 || filtroParcial) {
+      resultado = resultado.filter(
+        (i) => filtroStatus.includes(i.status) || (filtroParcial && isParcial(i))
+      );
     }
 
     if (filtroPrioridade !== "todas") {
