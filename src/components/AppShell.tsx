@@ -170,7 +170,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <ThemeToggle />
             </div>
           </header>
-           <main className="flex-1 bg-background px-4 py-6 md:px-8 md:py-8">{children}</main>
+           <main className="flex-1 bg-background px-4 py-6 pb-24 md:px-8 md:py-8">{children}</main>
+           <nav className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-3 rounded-md border bg-card/95 p-1 shadow-lg backdrop-blur md:hidden" aria-label="Navegação principal">
+             <NavLink to="/" end className="flex flex-col items-center gap-1 rounded-md px-2 py-2 text-xs font-semibold text-muted-foreground" activeClassName="bg-primary text-primary-foreground">
+               <Home className="h-5 w-5" /><span>Início</span>
+             </NavLink>
+             <NavLink to="/itens" className="flex flex-col items-center gap-1 rounded-md px-2 py-2 text-xs font-semibold text-muted-foreground" activeClassName="bg-primary text-primary-foreground">
+               <ListChecks className="h-5 w-5" /><span>Enxoval</span>
+             </NavLink>
+             <NavLink to="/reservados" className="flex flex-col items-center gap-1 rounded-md px-2 py-2 text-xs font-semibold text-muted-foreground" activeClassName="bg-primary text-primary-foreground">
+               <BookmarkCheck className="h-5 w-5" /><span>Reservados</span>
+             </NavLink>
+           </nav>
         </div>
       </div>
     </SidebarProvider>

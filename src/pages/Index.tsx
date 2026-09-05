@@ -739,7 +739,7 @@ const Index = () => {
           </div>
         </header>
 
-        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Itens cadastrados</CardTitle>
@@ -757,7 +757,7 @@ const Index = () => {
               <p className="text-xs text-muted-foreground">{percentualConclusao}% do enxoval concluído</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="col-span-2 xl:col-span-1">
             <CardHeader className="flex items-start justify-between pb-2">
               <div>
                 <CardTitle className="text-sm font-medium">Total já gasto</CardTitle>
@@ -771,7 +771,7 @@ const Index = () => {
               <p className="text-xs text-muted-foreground">Considerando o que já foi comprado</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="col-span-2 xl:col-span-1">
             <CardHeader className="flex items-start justify-between pb-2">
               <div>
                 <CardTitle className="text-sm font-medium">Ainda falta comprar</CardTitle>

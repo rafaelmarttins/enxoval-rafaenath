@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { ArrowRight, CheckCircle2, CircleDollarSign, Package, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -262,26 +262,13 @@ const Dashboard = () => {
               {porStatus.length === 0 ? (
                 <p className="text-sm text-muted-foreground">Cadastre itens para visualizar o progresso.</p>
               ) : (
-                <div className="grid gap-4 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-                  <div className="h-48">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={porStatus}
-                          dataKey="valor"
-                          nameKey="status"
-                          innerRadius={55}
-                          outerRadius={80}
-                          paddingAngle={4}
-                        >
-                          {porStatus.map((entry) => (
-                            <Cell key={entry.status} fill={STATUS_COLORS[entry.status]} />
-                          ))}
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
+                <div className="space-y-5 py-2">
+                  <div className="flex h-3 overflow-hidden rounded-full bg-muted">
+                    {porStatus.map((entry) => (
+                      <div key={entry.status} style={{ width: `${(entry.valor / totalItens) * 100}%`, backgroundColor: STATUS_COLORS[entry.status] }} />
+                    ))}
                   </div>
-                  <div className="space-y-2 text-sm">
+                  <div className="space-y-3 text-sm">
                     {porStatus.map((entry) => (
                       <div key={entry.status} className="flex items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
@@ -291,7 +278,7 @@ const Dashboard = () => {
                           />
                           <span>{entry.status}</span>
                         </div>
-                        <span className="text-xs text-muted-foreground">{entry.valor} item(s)</span>
+                        <span className="font-semibold">{entry.valor} <span className="font-normal text-muted-foreground">item(s)</span></span>
                       </div>
                     ))}
                   </div>
