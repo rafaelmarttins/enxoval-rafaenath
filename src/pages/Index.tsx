@@ -575,7 +575,7 @@ const Index = () => {
     );
 
     if (currentUserId) {
-      const payload: Record<string, unknown> = { status: novoStatus };
+      const payload: { status: Status; quantidade_adquirida?: number } = { status: novoStatus };
       if (autoSetQuantidadeAdquirida) payload.quantidade_adquirida = 1;
 
       const { error } = await supabase
