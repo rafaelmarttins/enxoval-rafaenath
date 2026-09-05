@@ -36,7 +36,7 @@ type EnxovalItem = {
 
 const STATUS_COLORS: Record<Status, string> = {
   "Não comprado": "hsl(var(--muted-foreground))",
-  Comprado: "hsl(142 76% 36%)",
+  Comprado: "hsl(var(--success))",
   Presenteado: "hsl(var(--primary))",
 };
 
@@ -44,7 +44,7 @@ const CATEGORIA_COLORS: Record<Categoria, string> = {
   Cozinha: "hsl(37 90% 55%)",
   Quarto: "hsl(271 81% 56%)",
   Banheiro: "hsl(199 89% 48%)",
-  Sala: "hsl(142 76% 36%)",
+  Sala: "hsl(var(--success))",
   Decoração: "hsl(326 74% 55%)",
   Eletrodomésticos: "hsl(210 80% 45%)",
   Outros: "hsl(215 14% 34%)",
@@ -206,9 +206,8 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-8">
-        <header className="flex items-center justify-between gap-4">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
+      <header className="flex items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Home className="h-6 w-6 text-primary" />
@@ -243,7 +242,7 @@ const Dashboard = () => {
               <div>
                 <CardTitle className="text-sm font-medium">Total gasto</CardTitle>
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-success/10 text-success">
                 <Wallet className="h-4 w-4" />
               </div>
             </CardHeader>
@@ -364,11 +363,11 @@ const Dashboard = () => {
               {items
                 .filter((i) => i.prioridade === "Alta" && i.status === "Não comprado")
                 .map((item) => (
-                  <Card key={item.id} className="border-amber-200 bg-amber-50/60">
+                  <Card key={item.id} className="border-warning/30 bg-warning/10">
                     <CardContent className="flex items-center justify-between gap-3 p-3">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <Badge variant="destructive" className="bg-amber-500 text-amber-50 hover:bg-amber-500">
+                          <Badge variant="destructive" className="bg-warning text-warning-foreground hover:bg-warning">
                             Alta prioridade
                           </Badge>
                           <span className="text-xs text-muted-foreground">{item.categoria}</span>
@@ -407,14 +406,13 @@ const Dashboard = () => {
                     labelFormatter={(label: string) => `Categoria: ${label}`}
                   />
                   <Legend />
-                  <Bar dataKey="gasto" name="Já gasto" fill="hsl(142 76% 36%)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="gasto" name="Já gasto" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="faltante" name="Ainda falta" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           )}
         </section>
-      </main>
     </div>
   );
 };

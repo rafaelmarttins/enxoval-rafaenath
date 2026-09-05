@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -109,8 +110,18 @@ const Auth = () => {
   const passwordField = form.register("password");
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-4 py-10">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-md">
+          <Heart className="h-7 w-7 fill-current" />
+        </div>
+        <div className="space-y-1">
+          <p className="font-serif text-3xl font-semibold tracking-tight">Rafa &amp; Nath</p>
+          <p className="text-sm text-muted-foreground">Organize com carinho o enxoval do nosso casamento</p>
+        </div>
+      </div>
+
+      <Card className="w-full max-w-md border-primary/10 shadow-lg shadow-primary/5">
         <CardHeader className="space-y-2 text-center">
           <CardTitle className="text-2xl font-semibold tracking-tight">
             {mode === "login" ? "Entrar" : "Criar conta"}

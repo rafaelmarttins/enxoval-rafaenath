@@ -716,9 +716,8 @@ const Index = () => {
      busca.trim() || filtroCategoria !== "todas" || filtroStatus.length > 0 || filtroParcial || filtroPrioridade !== "todas";
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-8">
-        <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="mx-auto flex max-w-7xl flex-col gap-6">
+      <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Heart className="h-8 w-8 text-primary" />
@@ -763,7 +762,7 @@ const Index = () => {
               <div>
                 <CardTitle className="text-sm font-medium">Total já gasto</CardTitle>
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-success/10 text-success">
                 <Wallet className="h-4 w-4" />
               </div>
             </CardHeader>
@@ -946,7 +945,7 @@ const Index = () => {
                         <div className="space-y-1">
                           <p className="flex flex-wrap items-center gap-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                             {item.status === "Comprado" ? (
-                              <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-200">
+                              <span className="rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">
                                 COMPRADO
                               </span>
                             ) : item.status === "Presenteado" ? (
@@ -1116,7 +1115,7 @@ const Index = () => {
                               }
                               className={
                                 item.status === "Comprado"
-                                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                                  ? "border-success/30 bg-success/10 text-success"
                                   : item.status === "Presenteado"
                                     ? ""
                                     : ""
@@ -1465,7 +1464,6 @@ const Index = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </main>
     </div>
   );
 };

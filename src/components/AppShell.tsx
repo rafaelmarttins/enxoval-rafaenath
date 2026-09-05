@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Home, ListChecks, LogOut, Moon, Sun, Laptop, BookmarkCheck } from "lucide-react";
+import { Home, ListChecks, LogOut, Moon, Sun, Laptop, BookmarkCheck, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -79,13 +79,13 @@ export function AppSidebar() {
     <Sidebar collapsible="offcanvas" className="border-r bg-sidebar shadow-sm">
       <SidebarContent className="flex flex-col justify-between">
         <div>
-          <div className="flex items-center gap-3 px-6 py-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground text-xl font-semibold shadow-sm">
-              E
+          <div className="flex items-center gap-3 border-b border-sidebar-border/70 px-6 py-6">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-sm">
+              <Heart className="h-5 w-5 fill-current" />
             </div>
             <div className="space-y-0.5">
-              <p className="text-sm font-medium text-muted-foreground">Enxoval</p>
-              <p className="text-base font-semibold tracking-tight">Painel de Casa</p>
+              <p className="font-serif text-lg font-semibold leading-tight tracking-tight">Rafa &amp; Nath</p>
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Enxoval de casamento</p>
             </div>
           </div>
 
@@ -156,16 +156,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex min-h-screen flex-1 flex-col bg-background">
-          <header className="flex h-20 items-center justify-between border-b bg-background/80 px-8">
+          <header className="flex h-20 items-center justify-between border-b bg-background/80 px-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="flex items-center gap-3">
               <SidebarTrigger />
-              <div className="text-sm font-medium text-muted-foreground">Painel de Casa</div>
+              <div className="hidden items-center gap-1.5 text-sm text-muted-foreground sm:flex">
+                <Heart className="h-3.5 w-3.5 text-primary" />
+                <span>Organizando com carinho o nosso novo lar</span>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />
             </div>
           </header>
-          <main className="flex-1 bg-background px-8 py-8">{children}</main>
+          <main className="flex-1 bg-background px-6 py-8 md:px-8">{children}</main>
         </div>
       </div>
     </SidebarProvider>
