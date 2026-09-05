@@ -427,9 +427,12 @@ const Index = () => {
 
     if (formImageFile) {
       const uploadedUrl = await uploadImageFile(formImageFile);
-      if (uploadedUrl) {
-        finalImageUrl = uploadedUrl;
+      if (!uploadedUrl) {
+        // Não salva o item sem a imagem escolhida — o usuário decide se tenta de novo
+        setUploadingImage(false);
+        return;
       }
+      finalImageUrl = uploadedUrl;
     }
 
     setUploadingImage(false);
