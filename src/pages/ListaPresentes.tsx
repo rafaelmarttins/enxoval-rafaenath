@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Heart } from "lucide-react";
+import { ExternalLink, Gift, Heart, Search } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { z } from "zod";
 
@@ -196,15 +196,15 @@ export default function ListaPresentes() {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-8 sm:px-6">
-        <header className="space-y-2">
+      <main className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 md:py-10">
+         <header className="space-y-6">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-sm">
+               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm">
                 <Heart className="h-5 w-5 fill-current" />
               </div>
               <div className="space-y-1">
-                <h1 className="font-serif text-2xl font-semibold tracking-tight sm:text-3xl">
+                 <h1 className="font-serif text-2xl font-semibold sm:text-3xl">
                   Lista de Presentes · Rafa &amp; Nath
                 </h1>
                 <p className="text-sm text-muted-foreground">
@@ -212,12 +212,12 @@ export default function ListaPresentes() {
                 </p>
               </div>
             </div>
-            <Badge variant="secondary" className="text-sm">
+             <Badge variant="secondary" className="h-9 px-4 text-sm">
               {disponiveisCount} itens disponíveis para presente
             </Badge>
           </div>
 
-          <Card className="border-primary/10 bg-card/50">
+           <Card className="border-border bg-card shadow-sm">
             <CardContent className="grid gap-3 p-4 sm:grid-cols-3">
               <div className="sm:col-span-1">
                 <Label htmlFor="busca" className="text-xs text-muted-foreground">
@@ -265,23 +265,23 @@ export default function ListaPresentes() {
         </header>
 
         {loading ? (
-          <div className="py-10 text-center text-sm text-muted-foreground">Carregando lista...</div>
+           <div className="rounded-md border bg-card py-16 text-center text-sm text-muted-foreground">Carregando lista...</div>
         ) : filtrados.length === 0 ? (
-          <div className="py-10 text-center text-sm text-muted-foreground">Nenhum item disponível no momento.</div>
+           <div className="rounded-md border bg-card py-16 text-center"><Gift className="mx-auto mb-4 h-8 w-8 text-primary" /><h2 className="font-serif text-xl font-semibold">Todos os presentes foram escolhidos</h2><p className="mt-2 text-sm text-muted-foreground">Obrigado por fazer parte deste momento.</p></div>
         ) : (
-          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+           <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filtrados.map((item) => {
               const reservado = Boolean(item.presenteadoPor);
 
               return (
-                <Card key={item.id} className="overflow-hidden">
+                 <Card key={item.id} className="group overflow-hidden border-border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
                   {item.imageUrl ? (
                     <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
                       <img
                         src={item.imageUrl}
                         alt={`Foto do item ${item.nome}`}
                         loading="lazy"
-                        className="h-full w-full object-cover"
+                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                       />
                     </div>
                   ) : (
@@ -304,7 +304,7 @@ export default function ListaPresentes() {
                         rel="noreferrer"
                         className="text-sm font-medium text-primary underline-offset-2 hover:underline"
                       >
-                        Ver na loja
+                         Ver na loja <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
                       </a>
                     ) : (
                       <p className="text-sm text-muted-foreground">Link da loja não informado.</p>

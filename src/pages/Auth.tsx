@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { Heart } from "lucide-react";
+import { Heart, ShieldCheck } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -110,9 +110,15 @@ const Auth = () => {
   const passwordField = form.register("password");
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-4 py-10">
-      <div className="flex flex-col items-center gap-3 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-md">
+    <div className="grid min-h-screen bg-background lg:grid-cols-[1.05fr_0.95fr]">
+      <section className="hidden flex-col justify-between bg-primary p-12 text-primary-foreground lg:flex">
+        <div className="flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-md bg-primary-foreground text-primary"><Heart className="h-5 w-5 fill-current" /></div><span className="font-serif text-xl font-semibold">Rafa &amp; Nath</span></div>
+        <div className="max-w-xl"><p className="text-sm font-semibold text-primary-foreground/60">NOSSO NOVO LAR</p><h1 className="mt-4 font-serif text-5xl font-semibold leading-tight">Cada escolha, um passo mais perto de casa.</h1><p className="mt-5 max-w-md text-base text-primary-foreground/70">Um espaço simples para organizar cada detalhe do nosso enxoval.</p></div>
+        <div className="flex items-center gap-2 text-sm text-primary-foreground/60"><ShieldCheck className="h-4 w-4" /> Seus dados permanecem protegidos.</div>
+      </section>
+      <section className="flex flex-col items-center justify-center gap-8 px-4 py-10 sm:px-8">
+      <div className="flex flex-col items-center gap-3 text-center lg:hidden">
+        <div className="flex h-14 w-14 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-md">
           <Heart className="h-7 w-7 fill-current" />
         </div>
         <div className="space-y-1">
@@ -121,7 +127,7 @@ const Auth = () => {
         </div>
       </div>
 
-      <Card className="w-full max-w-md border-primary/10 shadow-lg shadow-primary/5">
+      <Card className="w-full max-w-md border-border shadow-lg">
         <CardHeader className="space-y-2 text-center">
           <CardTitle className="text-2xl font-semibold tracking-tight">
             {mode === "login" ? "Entrar" : "Criar conta"}
@@ -199,7 +205,7 @@ const Auth = () => {
             )}
           </div>
         </CardContent>
-      </Card>
+      </Card></section>
     </div>
   );
 };
