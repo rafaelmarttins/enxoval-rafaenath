@@ -36,7 +36,9 @@ type EnxovalItem = {
   valorUnitario: number;
   prioridade: Prioridade;
   status: Status;
+  presenteadoPor: string | null;
 };
+
 
 const STATUS_COLORS: Record<Status, string> = {
   "Não comprado": "hsl(var(--muted-foreground))",
