@@ -71,7 +71,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Poppins", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        sans: ["Nunito Sans", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        serif: ["Lora", "Georgia", "serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

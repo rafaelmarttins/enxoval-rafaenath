@@ -575,7 +575,7 @@ const Index = () => {
     );
 
     if (currentUserId) {
-      const payload: Record<string, unknown> = { status: novoStatus };
+      const payload: { status: Status; quantidade_adquirida?: number } = { status: novoStatus };
       if (autoSetQuantidadeAdquirida) payload.quantidade_adquirida = 1;
 
       const { error } = await supabase
@@ -716,12 +716,12 @@ const Index = () => {
      busca.trim() || filtroCategoria !== "todas" || filtroStatus.length > 0 || filtroParcial || filtroPrioridade !== "todas";
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-6">
+    <div className="mx-auto flex max-w-7xl flex-col gap-7">
       <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Heart className="h-8 w-8 text-primary" />
-              <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Itens do enxoval</h1>
+              <Heart className="h-7 w-7 text-primary" />
+              <h1 className="font-serif text-3xl font-semibold md:text-4xl">Meu Enxoval</h1>
             </div>
             <p className="text-sm text-muted-foreground">
               Veja tudo o que você já comprou e o que ainda falta.
@@ -739,7 +739,7 @@ const Index = () => {
           </div>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-4">
+        <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Itens cadastrados</CardTitle>
@@ -757,7 +757,7 @@ const Index = () => {
               <p className="text-xs text-muted-foreground">{percentualConclusao}% do enxoval concluído</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="col-span-2 xl:col-span-1">
             <CardHeader className="flex items-start justify-between pb-2">
               <div>
                 <CardTitle className="text-sm font-medium">Total já gasto</CardTitle>
@@ -771,7 +771,7 @@ const Index = () => {
               <p className="text-xs text-muted-foreground">Considerando o que já foi comprado</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="col-span-2 xl:col-span-1">
             <CardHeader className="flex items-start justify-between pb-2">
               <div>
                 <CardTitle className="text-sm font-medium">Ainda falta comprar</CardTitle>
@@ -786,8 +786,8 @@ const Index = () => {
             </CardContent>
           </Card>
         </section>
-        <section className="space-y-4 rounded-lg border bg-card p-4 shadow-sm">
-          <div className="grid w-full gap-3 md:grid-cols-5 md:items-end">
+        <section className="space-y-4 rounded-md border bg-card p-4 shadow-sm">
+          <div className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-5 lg:items-end">
             <div className="w-full">
               <Label htmlFor="busca">Buscar item</Label>
               <Input
@@ -818,7 +818,7 @@ const Index = () => {
             </div>
             <div className="w-full">
               <Label>Status</Label>
-              <div className="mt-2 grid min-h-10 w-full grid-flow-col grid-cols-2 grid-rows-2 gap-x-3 gap-y-2 overflow-hidden rounded-md border border-input bg-background px-2 py-2">
+               <div className="mt-2 grid min-h-10 w-full grid-cols-2 gap-x-3 gap-y-2 overflow-hidden rounded-md border border-input bg-background px-2 py-2">
                 {STATUS.map((status) => (
                   <label
                     key={status}
@@ -913,7 +913,7 @@ const Index = () => {
           </div>
 
           {viewMode === "cards" ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
               {loadingItems ? (
                 <p className="col-span-full text-sm text-muted-foreground">Carregando itens...</p>
               ) : itensFiltradosEOrdenados.length === 0 ? (
@@ -925,13 +925,13 @@ const Index = () => {
                   <Card
                     key={item.id}
                     className={cn(
-                      "flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md",
+                      "flex h-full flex-col overflow-hidden border-border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg",
                       item.prioridade === "Alta" &&
                         "animate-fade-in border-primary/30 bg-primary/5 dark:border-primary/40 dark:bg-primary/10",
                     )}
                   >
                     {item.imageUrl && (
-                      <div className="relative h-40 w-full overflow-hidden bg-muted">
+                       <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={item.imageUrl}
