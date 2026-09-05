@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
-import { ArrowRight, CheckCircle2, CircleDollarSign, Package, ShoppingBag } from "lucide-react";
+import { ArrowRight, CheckCircle2, CircleDollarSign, Copy, ExternalLink, Gift, Package, ShoppingBag, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+
 
 const STORAGE_KEY = "enxoval_casamento_itens_v1";
 
@@ -33,7 +36,9 @@ type EnxovalItem = {
   valorUnitario: number;
   prioridade: Prioridade;
   status: Status;
+  presenteadoPor: string | null;
 };
+
 
 const STATUS_COLORS: Record<Status, string> = {
   "Não comprado": "hsl(var(--muted-foreground))",
@@ -79,6 +84,18 @@ function loadItems(): EnxovalItem[] {
 
 const Dashboard = () => {
   const [items, setItems] = useState<EnxovalItem[]>([]);
+  const { toast } = useToast();
+
+  const linkListaPresentes = `${typeof window !== "undefined" ? window.location.origin : ""}/lista-presentes/enxoval`;
+
+  const copiarLink = async () => {
+    try {
+      await navigator.clipboard.writeText(linkListaPresentes);
+      toast({ title: "Link copiado!", description: "Envie para familiares e amigos escolherem os presentes." });
+    } catch {
+      toast({ title: "Não foi possível copiar", description: linkListaPresentes, variant: "destructive" });
+    }
+  };
 
   const carregarItens = async () => {
     const { data: authData } = await supabase.auth.getUser();
@@ -109,7 +126,9 @@ const Dashboard = () => {
       valorUnitario: Number(row.valor_unitario) || 0,
       prioridade: row.prioridade as Prioridade,
       status: row.status as Status,
+      presenteadoPor: row.presenteado_por ?? null,
     }));
+
 
     setItems(mapeados);
   };
@@ -205,19 +224,79 @@ const Dashboard = () => {
     },
     [items],
   );
+  const reservados = useMemo(
+    () => items.filter((i) => Boolean(i.presenteadoPor && i.presenteadoPor.trim())),
+    [items],
+  );
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col gap-7">
-      <header className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+      <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="mb-1 text-sm font-semibold text-primary">Visão geral</p>
           <h1 className="font-serif text-3xl font-semibold md:text-4xl">Como está o nosso enxoval?</h1>
           <p className="mt-2 text-sm text-muted-foreground">Acompanhe o que já conquistamos e planeje as próximas compras.</p>
         </div>
-        <Link to="/itens" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
-          Ver meu enxoval <ArrowRight className="h-4 w-4" />
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button asChild>
+            <a href={linkListaPresentes} target="_blank" rel="noopener noreferrer">
+              <Gift className="mr-2 h-4 w-4" /> Abrir lista de presentes
+            </a>
+          </Button>
+          <Button variant="outline" onClick={copiarLink}>
+            <Copy className="mr-2 h-4 w-4" /> Copiar link
+          </Button>
+          <Link to="/itens" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+            Ver meu enxoval <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </header>
+
+      <Card className="shadow-sm">
+        <CardHeader className="flex flex-row items-center justify-between gap-3 pb-2">
+          <div>
+            <CardTitle className="font-serif text-lg font-semibold">Quem já reservou</CardTitle>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {reservados.length === 0
+                ? "Nenhum presente reservado até agora."
+                : `${reservados.length} presente(s) reservado(s) por convidados.`}
+            </p>
+          </div>
+          <Link
+            to="/reservados"
+            className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary hover:underline"
+          >
+            Gerenciar <ExternalLink className="h-4 w-4" />
+          </Link>
+        </CardHeader>
+        <CardContent>
+          {reservados.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Compartilhe o link da lista para que familiares e amigos escolham os presentes.
+            </p>
+          ) : (
+            <ul className="divide-y divide-border">
+              {reservados.slice(0, 6).map((item) => (
+                <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{item.nome}</p>
+                    <p className="text-xs text-muted-foreground">{item.categoria}</p>
+                  </div>
+                  <Badge variant="outline" className="gap-1 border-primary/40 bg-primary/10 text-primary">
+                    <UserRound className="h-3.5 w-3.5" /> {item.presenteadoPor}
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          )}
+          {reservados.length > 6 && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Mostrando 6 de {reservados.length}. Veja todos em “Gerenciar”.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <Card className="border-primary bg-primary text-primary-foreground md:col-span-2">
