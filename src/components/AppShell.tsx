@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
-import { Home, ListChecks, LogOut, Moon, Sun, Laptop, BookmarkCheck, Heart } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Home, ListChecks, LogOut, Moon, Sun, Laptop, BookmarkCheck, Heart, Settings } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { NavLink } from "@/components/NavLink";
 import {
   Sidebar,
@@ -71,27 +71,27 @@ export function AppSidebar() {
   };
 
   const navItemBase =
-    "flex items-center gap-3 rounded-lg px-4 py-3 text-base font-semibold text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring";
+    "flex items-center gap-3 rounded-md px-4 py-3 text-base font-semibold text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring";
   const navItemActive =
-    "bg-sidebar-accent text-sidebar-foreground ring-1 ring-sidebar-border shadow-sm";
+    "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm";
 
   return (
-    <Sidebar collapsible="offcanvas" className="border-r bg-sidebar shadow-sm">
+    <Sidebar collapsible="offcanvas" className="border-r border-sidebar-border bg-sidebar">
       <SidebarContent className="flex flex-col justify-between">
         <div>
-          <div className="flex items-center gap-3 border-b border-sidebar-border/70 px-6 py-6">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-sm">
+          <div className="flex items-center gap-3 border-b border-sidebar-border px-6 py-7">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground shadow-sm">
               <Heart className="h-5 w-5 fill-current" />
             </div>
             <div className="space-y-0.5">
-              <p className="font-serif text-lg font-semibold leading-tight tracking-tight">Rafa &amp; Nath</p>
-              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Enxoval de casamento</p>
+              <p className="font-serif text-xl font-semibold leading-tight">Rafa &amp; Nath</p>
+              <p className="text-xs font-semibold uppercase text-sidebar-foreground/50">Enxoval de casamento</p>
             </div>
           </div>
 
           <SidebarGroup className="mt-1">
-            <SidebarGroupLabel className="px-6 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-              Navegação
+            <SidebarGroupLabel className="px-6 text-xs font-semibold uppercase text-sidebar-foreground/40">
+              Seu espaço
             </SidebarGroupLabel>
             <SidebarGroupContent className="px-4">
               <SidebarMenu className="gap-2">
@@ -108,7 +108,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink to="/itens" className={navItemBase} activeClassName={navItemActive}>
                       <ListChecks className="h-5 w-5" />
-                      <span>Itens do enxoval</span>
+                       <span>Meu Enxoval</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -117,7 +117,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink to="/reservados" className={navItemBase} activeClassName={navItemActive}>
                       <BookmarkCheck className="h-5 w-5" />
-                      <span>Lista Reservados</span>
+                       <span>Lista de Reservados</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -126,17 +126,20 @@ export function AppSidebar() {
           </SidebarGroup>
         </div>
 
-        <div className="px-6 pb-6 pt-2 text-xs text-muted-foreground">
-          <button
+        <div className="space-y-1 border-t border-sidebar-border px-4 py-5">
+          <Button variant="ghost" className="w-full justify-start gap-3 px-4 text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground" disabled>
+            <Settings className="h-5 w-5" />
+            Configurações
+          </Button>
+          <Button
+            variant="ghost"
             type="button"
             onClick={handleLogout}
-            className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm font-semibold text-sidebar-foreground/80 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+            className="w-full justify-start gap-3 px-4 text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground"
           >
-            <span className="flex items-center gap-2">
-              <LogOut className="h-5 w-5" />
-              <span>Sair</span>
-            </span>
-          </button>
+            <LogOut className="h-5 w-5" />
+            Sair
+          </Button>
         </div>
       </SidebarContent>
     </Sidebar>
@@ -144,31 +147,30 @@ export function AppSidebar() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const page = location.pathname === "/" ? "Dashboard" : location.pathname === "/itens" ? "Meu Enxoval" : "Lista de Reservados";
   return (
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "19rem",
+          "--sidebar-width": "17rem",
           "--sidebar-width-icon": "3.5rem",
         } as CSSProperties
       }
     >
-      <div className="flex min-h-screen w-full bg-background">
+       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex min-h-screen flex-1 flex-col bg-background">
-          <header className="flex h-20 items-center justify-between border-b bg-background/80 px-8 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+           <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-card/90 px-4 backdrop-blur md:px-8 supports-[backdrop-filter]:bg-card/80">
             <div className="flex items-center gap-3">
               <SidebarTrigger />
-              <div className="hidden items-center gap-1.5 text-sm text-muted-foreground sm:flex">
-                <Heart className="h-3.5 w-3.5 text-primary" />
-                <span>Organizando com carinho o nosso novo lar</span>
-              </div>
+               <span className="text-sm font-semibold text-foreground">{page}</span>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />
             </div>
           </header>
-          <main className="flex-1 bg-background px-6 py-8 md:px-8">{children}</main>
+           <main className="flex-1 bg-background px-4 py-6 md:px-8 md:py-8">{children}</main>
         </div>
       </div>
     </SidebarProvider>
