@@ -142,6 +142,12 @@ export default function ListaPresentes() {
         if (va !== vb) return va - vb;
         return a.nome.localeCompare(b.nome, "pt-BR");
       }
+      if (sortMode === "valor_desc") {
+        const va = a.valorUnitario ?? -Infinity;
+        const vb = b.valorUnitario ?? -Infinity;
+        if (va !== vb) return vb - va;
+        return a.nome.localeCompare(b.nome, "pt-BR");
+      }
       const c = a.categoria.localeCompare(b.categoria, "pt-BR");
       if (c !== 0) return c;
       return a.nome.localeCompare(b.nome, "pt-BR");
