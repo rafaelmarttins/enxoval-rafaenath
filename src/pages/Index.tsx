@@ -458,6 +458,7 @@ const Index = () => {
       observacoes: formObservacoes.trim() || undefined,
       imageUrl: finalImageUrl || undefined,
       productUrl: formProductUrl.trim() || undefined,
+      ocultoLista: editingItem?.ocultoLista ?? false,
     };
 
     try {
@@ -536,6 +537,37 @@ const Index = () => {
       setIsDialogOpen(false);
       limparFormulario();
     }
+  }
+
+  async function toggleOcultoLista(item: EnxovalItem) {
+    const novoValor = !item.ocultoLista;
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, ocultoLista: novoValor } : i)));
+
+    if (currentUserId) {
+      const { error } = await supabase
+        .from("enxoval_items")
+        .update({ oculto_lista: novoValor })
+        .eq("id", item.id)
+        .eq("user_id", currentUserId);
+
+      if (error) {
+        console.error("Erro ao atualizar visibilidade:", error);
+        setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, ocultoLista: item.ocultoLista } : i)));
+        toast({
+          title: "Erro ao atualizar visibilidade",
+          description: "Não foi possível alterar a visibilidade do item na lista de presentes.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    toast({
+      title: novoValor ? "Item oculto da lista de presentes" : "Item visível na lista de presentes",
+      description: novoValor
+        ? `"${item.nome}" não aparecerá mais para os convidados.`
+        : `"${item.nome}" voltou a aparecer para os convidados.`,
+    });
   }
 
   async function marcarStatus(item: EnxovalItem, novoStatus: Status) {
