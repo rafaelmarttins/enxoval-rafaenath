@@ -320,6 +320,10 @@ export default function ListaPresentes() {
                       <p className="text-sm text-muted-foreground">Link da loja não informado.</p>
                     )}
 
+                    <p className="text-sm text-muted-foreground">
+                      Média Valor: <span className="font-medium text-foreground">{formatarValor(item.valorUnitario)}</span>
+                    </p>
+
                     {reservado ? (
                       <div className="flex items-center justify-between gap-2">
                         <Badge className="bg-primary/10 text-primary hover:bg-primary/10">
