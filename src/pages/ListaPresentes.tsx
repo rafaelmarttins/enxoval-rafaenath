@@ -34,6 +34,7 @@ type PublicItem = {
   nome: string;
   categoria: string;
   quantidadeDesejada: number;
+  valorUnitario?: number;
   imageUrl?: string;
   productUrl?: string;
   presenteadoPor?: string;
