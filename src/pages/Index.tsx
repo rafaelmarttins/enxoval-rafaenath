@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag, Table as TableIcon, LayoutGrid, CircleDashed } from "lucide-react";
+import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag, Table as TableIcon, LayoutGrid, CircleDashed, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,6 +73,7 @@ type EnxovalItem = {
   observacoes?: string;
   imageUrl?: string;
   productUrl?: string;
+  ocultoLista: boolean;
 };
 
 type SortField = "nome" | "prioridade";
@@ -198,6 +199,7 @@ const Index = () => {
         observacoes: row.observacoes ?? undefined,
         imageUrl: row.image_url ?? undefined,
         productUrl: row.product_url ?? undefined,
+        ocultoLista: Boolean(row.oculto_lista),
       }));
 
       setItems(mapeados);
