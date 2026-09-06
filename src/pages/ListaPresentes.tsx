@@ -64,7 +64,7 @@ export default function ListaPresentes() {
 
     const { data, error } = await supabase
       .from("enxoval_items")
-      .select("id, nome, categoria, quantidade_desejada, image_url, product_url, presenteado_por")
+      .select("id, nome, categoria, quantidade_desejada, valor_unitario, image_url, product_url, presenteado_por")
       .eq("status", "Não comprado");
 
     if (error || !data) {
@@ -79,6 +79,7 @@ export default function ListaPresentes() {
       nome: row.nome,
       categoria: row.categoria,
       quantidadeDesejada: Number(row.quantidade_desejada) || 0,
+      valorUnitario: row.valor_unitario != null ? Number(row.valor_unitario) : undefined,
       imageUrl: row.image_url ?? undefined,
       productUrl: row.product_url ?? undefined,
       presenteadoPor: row.presenteado_por ?? undefined,
