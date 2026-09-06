@@ -281,6 +281,7 @@ export default function ListaPresentes() {
                     <SelectItem value="categoria">Por categoria</SelectItem>
                     <SelectItem value="nome">A-Z</SelectItem>
                     <SelectItem value="valor">Menor valor</SelectItem>
+                    <SelectItem value="valor_desc">Maior valor</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
