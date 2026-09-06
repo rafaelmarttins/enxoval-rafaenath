@@ -1,0 +1,1 @@
+ALTER TABLE public.enxoval_items ADD COLUMN IF NOT EXISTS oculto_lista BOOLEAN NOT NULL DEFAULT false;

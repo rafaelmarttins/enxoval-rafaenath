@@ -65,7 +65,8 @@ export default function ListaPresentes() {
     const { data, error } = await supabase
       .from("enxoval_items")
       .select("id, nome, categoria, quantidade_desejada, valor_unitario, image_url, product_url, presenteado_por")
-      .eq("status", "Não comprado");
+      .eq("status", "Não comprado")
+      .eq("oculto_lista", false);
 
     if (error || !data) {
       console.error("Erro ao carregar lista pública:", error);

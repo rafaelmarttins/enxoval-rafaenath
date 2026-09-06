@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag, Table as TableIcon, LayoutGrid, CircleDashed } from "lucide-react";
+import { Heart, Plus, Download, Pencil, Trash2, CheckCircle2, Gift, ExternalLink, Upload, X, Wallet, ShoppingBag, Table as TableIcon, LayoutGrid, CircleDashed, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,6 +73,7 @@ type EnxovalItem = {
   observacoes?: string;
   imageUrl?: string;
   productUrl?: string;
+  ocultoLista: boolean;
 };
 
 type SortField = "nome" | "prioridade";
@@ -198,6 +199,7 @@ const Index = () => {
         observacoes: row.observacoes ?? undefined,
         imageUrl: row.image_url ?? undefined,
         productUrl: row.product_url ?? undefined,
+        ocultoLista: Boolean(row.oculto_lista),
       }));
 
       setItems(mapeados);
@@ -456,6 +458,7 @@ const Index = () => {
       observacoes: formObservacoes.trim() || undefined,
       imageUrl: finalImageUrl || undefined,
       productUrl: formProductUrl.trim() || undefined,
+      ocultoLista: editingItem?.ocultoLista ?? false,
     };
 
     try {
@@ -534,6 +537,37 @@ const Index = () => {
       setIsDialogOpen(false);
       limparFormulario();
     }
+  }
+
+  async function toggleOcultoLista(item: EnxovalItem) {
+    const novoValor = !item.ocultoLista;
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, ocultoLista: novoValor } : i)));
+
+    if (currentUserId) {
+      const { error } = await supabase
+        .from("enxoval_items")
+        .update({ oculto_lista: novoValor })
+        .eq("id", item.id)
+        .eq("user_id", currentUserId);
+
+      if (error) {
+        console.error("Erro ao atualizar visibilidade:", error);
+        setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, ocultoLista: item.ocultoLista } : i)));
+        toast({
+          title: "Erro ao atualizar visibilidade",
+          description: "Não foi possível alterar a visibilidade do item na lista de presentes.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    toast({
+      title: novoValor ? "Item oculto da lista de presentes" : "Item visível na lista de presentes",
+      description: novoValor
+        ? `"${item.nome}" não aparecerá mais para os convidados.`
+        : `"${item.nome}" voltou a aparecer para os convidados.`,
+    });
   }
 
   async function marcarStatus(item: EnxovalItem, novoStatus: Status) {
@@ -1041,7 +1075,16 @@ const Index = () => {
                         </div>
                       </div>
 
-                      <div className="mt-2 flex items-center justify-end gap-3 border-t pt-3 text-xs">
+                       <div className="mt-2 flex items-center justify-end gap-3 border-t pt-3 text-xs">
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-1 font-medium text-muted-foreground hover:text-foreground"
+                          title={item.ocultoLista ? "Mostrar na lista de presentes" : "Ocultar da lista de presentes"}
+                          onClick={() => toggleOcultoLista(item)}
+                        >
+                          {item.ocultoLista ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                          {item.ocultoLista ? "Oculto da lista" : "Visível na lista"}
+                        </button>
                         <button
                           type="button"
                           className="font-medium text-muted-foreground hover:text-foreground"
@@ -1165,6 +1208,15 @@ const Index = () => {
                                 <Gift className="h-3 w-3" />
                               </Button>
                             )}
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7"
+                              title={item.ocultoLista ? "Mostrar na lista de presentes" : "Ocultar da lista de presentes"}
+                              onClick={() => toggleOcultoLista(item)}
+                            >
+                              {item.ocultoLista ? <EyeOff className="h-3 w-3 text-muted-foreground" /> : <Eye className="h-3 w-3" />}
+                            </Button>
                             <Button
                               size="icon"
                               variant="ghost"
