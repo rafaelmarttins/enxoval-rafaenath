@@ -40,7 +40,7 @@ type PublicItem = {
   presenteadoPor?: string;
 };
 
-type SortMode = "categoria" | "nome";
+type SortMode = "categoria" | "nome" | "valor";
 
 export default function ListaPresentes() {
   const { toast } = useToast();
