@@ -40,7 +40,7 @@ type PublicItem = {
   presenteadoPor?: string;
 };
 
-type SortMode = "categoria" | "nome";
+type SortMode = "categoria" | "nome" | "valor";
 
 export default function ListaPresentes() {
   const { toast } = useToast();
@@ -135,6 +135,12 @@ export default function ListaPresentes() {
 
     out.sort((a, b) => {
       if (sortMode === "nome") return a.nome.localeCompare(b.nome, "pt-BR");
+      if (sortMode === "valor") {
+        const va = a.valorUnitario ?? Infinity;
+        const vb = b.valorUnitario ?? Infinity;
+        if (va !== vb) return va - vb;
+        return a.nome.localeCompare(b.nome, "pt-BR");
+      }
       const c = a.categoria.localeCompare(b.categoria, "pt-BR");
       if (c !== 0) return c;
       return a.nome.localeCompare(b.nome, "pt-BR");
@@ -267,6 +273,7 @@ export default function ListaPresentes() {
                   <SelectContent className="z-50 bg-popover">
                     <SelectItem value="categoria">Por categoria</SelectItem>
                     <SelectItem value="nome">A-Z</SelectItem>
+                    <SelectItem value="valor">Menor valor</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
