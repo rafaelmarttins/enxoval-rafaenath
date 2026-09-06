@@ -273,6 +273,7 @@ export default function ListaPresentes() {
                   <SelectContent className="z-50 bg-popover">
                     <SelectItem value="categoria">Por categoria</SelectItem>
                     <SelectItem value="nome">A-Z</SelectItem>
+                    <SelectItem value="valor">Menor valor</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
