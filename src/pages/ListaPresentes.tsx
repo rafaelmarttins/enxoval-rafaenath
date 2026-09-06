@@ -111,6 +111,14 @@ export default function ListaPresentes() {
     };
   }, []);
 
+  const formatarValor = (valor: number | undefined) => {
+    if (valor == null || Number.isNaN(valor)) return "—";
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(valor);
+  };
+
   const categorias = useMemo(() => {
     const set = new Set<string>();
     items.forEach((i) => set.add(i.categoria));
