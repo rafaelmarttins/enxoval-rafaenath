@@ -1075,7 +1075,16 @@ const Index = () => {
                         </div>
                       </div>
 
-                      <div className="mt-2 flex items-center justify-end gap-3 border-t pt-3 text-xs">
+                       <div className="mt-2 flex items-center justify-end gap-3 border-t pt-3 text-xs">
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-1 font-medium text-muted-foreground hover:text-foreground"
+                          title={item.ocultoLista ? "Mostrar na lista de presentes" : "Ocultar da lista de presentes"}
+                          onClick={() => toggleOcultoLista(item)}
+                        >
+                          {item.ocultoLista ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                          {item.ocultoLista ? "Oculto da lista" : "Visível na lista"}
+                        </button>
                         <button
                           type="button"
                           className="font-medium text-muted-foreground hover:text-foreground"
@@ -1199,6 +1208,15 @@ const Index = () => {
                                 <Gift className="h-3 w-3" />
                               </Button>
                             )}
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-7 w-7"
+                              title={item.ocultoLista ? "Mostrar na lista de presentes" : "Ocultar da lista de presentes"}
+                              onClick={() => toggleOcultoLista(item)}
+                            >
+                              {item.ocultoLista ? <EyeOff className="h-3 w-3 text-muted-foreground" /> : <Eye className="h-3 w-3" />}
+                            </Button>
                             <Button
                               size="icon"
                               variant="ghost"
