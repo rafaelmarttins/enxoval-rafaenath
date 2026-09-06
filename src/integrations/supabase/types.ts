@@ -23,6 +23,7 @@ export type Database = {
           loja: string | null
           nome: string
           observacoes: string | null
+          oculto_lista: boolean
           presenteado_por: string | null
           prioridade: string
           product_url: string | null
@@ -41,6 +42,7 @@ export type Database = {
           loja?: string | null
           nome: string
           observacoes?: string | null
+          oculto_lista?: boolean
           presenteado_por?: string | null
           prioridade: string
           product_url?: string | null
@@ -59,6 +61,7 @@ export type Database = {
           loja?: string | null
           nome?: string
           observacoes?: string | null
+          oculto_lista?: boolean
           presenteado_por?: string | null
           prioridade?: string
           product_url?: string | null
