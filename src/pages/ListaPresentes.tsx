@@ -34,6 +34,7 @@ type PublicItem = {
   nome: string;
   categoria: string;
   quantidadeDesejada: number;
+  valorUnitario?: number;
   imageUrl?: string;
   productUrl?: string;
   presenteadoPor?: string;
@@ -63,7 +64,7 @@ export default function ListaPresentes() {
 
     const { data, error } = await supabase
       .from("enxoval_items")
-      .select("id, nome, categoria, quantidade_desejada, image_url, product_url, presenteado_por")
+      .select("id, nome, categoria, quantidade_desejada, valor_unitario, image_url, product_url, presenteado_por")
       .eq("status", "Não comprado");
 
     if (error || !data) {
@@ -78,6 +79,7 @@ export default function ListaPresentes() {
       nome: row.nome,
       categoria: row.categoria,
       quantidadeDesejada: Number(row.quantidade_desejada) || 0,
+      valorUnitario: row.valor_unitario != null ? Number(row.valor_unitario) : undefined,
       imageUrl: row.image_url ?? undefined,
       productUrl: row.product_url ?? undefined,
       presenteadoPor: row.presenteado_por ?? undefined,
@@ -108,6 +110,14 @@ export default function ListaPresentes() {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  const formatarValor = (valor: number | undefined) => {
+    if (valor == null || Number.isNaN(valor)) return "—";
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(valor);
+  };
 
   const categorias = useMemo(() => {
     const set = new Set<string>();
@@ -309,6 +319,10 @@ export default function ListaPresentes() {
                     ) : (
                       <p className="text-sm text-muted-foreground">Link da loja não informado.</p>
                     )}
+
+                    <p className="text-sm text-muted-foreground">
+                      Média Valor: <span className="font-medium text-foreground">{formatarValor(item.valorUnitario)}</span>
+                    </p>
 
                     {reservado ? (
                       <div className="flex items-center justify-between gap-2">
